@@ -4,8 +4,6 @@ def read_file_to_arr(file_name):
         size_rows_cols = file.readline()
         number_of_rows = int(size_rows_cols.split("\t")[0])
         number_of_cols = int(size_rows_cols.split("\t")[1])
-        print(number_of_cols)
-        print(number_of_cols)
         arr = []
         for i in range(number_of_rows):
             row = file.readline().replace("\t", " ").replace("\n", "").split(" ")
@@ -17,5 +15,5 @@ def read_file_to_arr(file_name):
 
 
 if __name__ == "__main__":
-    arr_input1 = read_file_to_arr("test1.txt")
+    arr_input1 = read_file_to_arr("test2.txt")
     print(arr_input1)
