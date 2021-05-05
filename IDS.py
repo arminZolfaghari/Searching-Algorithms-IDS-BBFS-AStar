@@ -31,6 +31,7 @@ class Graph:
 
 
 if __name__ == "__main__":
+
     g = Graph(7)
     g.addEdge(0, 1)
     g.addEdge(0, 2)

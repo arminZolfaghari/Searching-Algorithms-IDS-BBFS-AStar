@@ -101,3 +101,14 @@ def check_next_move(environment, next_move, robot_coordinates):
 
     else:
         return True
+
+
+# get all permitted movements in each state
+def get_all_permitted_movements(environment, robot_coordinates):
+    all_movements = {'u', 'r', 'd', 'l'}
+    all_permitted_movements = []
+    for movement in all_movements:
+        if check_next_move(environment, movement, robot_coordinates):
+            all_permitted_movements.append(movement)
+
+    return all_permitted_movements
