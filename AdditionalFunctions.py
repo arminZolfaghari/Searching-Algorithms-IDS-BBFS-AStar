@@ -89,14 +89,16 @@ def check_next_move(environment, next_move, robot_coordinates):
     if not is_first_step_available:
         return False
 
-    # robot is not allowed to go to the cells with x in it
-    elif 'x' in environment[robot_next_coordinates.get('x')][robot_next_coordinates.get('y')]:
+    # robot is not allowed to go to the cells with x or p in it
+    elif ('x' or 'p') in environment[robot_next_coordinates.get('x')][robot_next_coordinates.get('y')] or 'p' :
         return False
 
-    # robot can't push two cells both with butter
+    # robot can't push two cells both with butter or after butter cell, cell is x
     is_two_step_available, robot_2next_coordinates = move_forward(environment, next_move, robot_next_coordinates)
     if is_two_step_available:
         if 'b' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']] and 'b' in environment[robot_2next_coordinates['x'][robot_2next_coordinates['y']]]:
+            return False
+        if 'b' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']] and 'x' in environment[robot_2next_coordinates['x'][robot_2next_coordinates['y']]]:
             return False
 
     else:
