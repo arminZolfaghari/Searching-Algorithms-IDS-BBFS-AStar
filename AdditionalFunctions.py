@@ -40,16 +40,14 @@ def check_next_move(enviroment, next_move, robot_coordinates):
     # robot is not allowed to go outside the enviroment
     if robot_coordinates.get('x') > num_rows or robot_coordinates.get('y') > num_cols:
         robot_coordinates = move_backward(next_move, robot_coordinates)
-        return False
 
     # robot is not allowed to go to the cells with x in it
     elif 'x' in enviroment[robot_coordinates.get('x')][robot_coordinates.get('y')]:
         robot_coordinates = move_backward(next_move, robot_coordinates)
-        return False
 
     # robot can't push two cells both with butter
     elif True:
         pass
 
     else:
-        return enviroment, robot_coordinates
+        return next_move
