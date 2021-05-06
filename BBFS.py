@@ -193,7 +193,7 @@
 # 		print(f"Path does not exist between {src} and {dest}")
 
 from AdditionalFunctions import *
-import Node
+from Node import Node, Initial_node
 
 def print_frontier(frontier):
     for f in frontier:
@@ -226,10 +226,8 @@ def bfs_forward(node, frontier):
         # print('new env: ', new_environment)
         # print('curr env: ', node.environment)
         # new states should be checked. they should not be repetetive states.
-        if node.parent == 'parent':
-            child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
-            frontier.append(child_node)
-        if new_environment != node.parent.enviroment:
+
+        if new_environment != node.parent.environment:
             child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
             frontier.append(child_node)
 
@@ -248,14 +246,15 @@ def bfs_backward(node, frontier):
     return frontier
 
 
-def BBFS(environment, robot_coordinates, file_name):
+def BBFS(file_name):
 
     environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(file_name)
 
     forward_frontier, backward_frontier = [], []
     # initialize robot coordinates to initial node
-    initial_node = Node(environment, robot_coordinates, 0, ' ', 'parent')
-    forward_frontier.insert(0, initial_node)
+    initial_node = Initial_node([])
+    starting_node = Node(environment_without_cost, robot_coordinates, 0, ' ', initial_node)
+    forward_frontier.insert(0, starting_node)
 
     # this function returns all the possible goal states. but it's not enough. nodes are needed for backward bfs.
     goal_environments = generate_all_goal_environment(file_name)
@@ -282,5 +281,5 @@ def BBFS(environment, robot_coordinates, file_name):
 if __name__ == '__main__':
 
     file_name = 'test1.txt'
-    s = BBFS(environment_without_cost, robot_coordinates, file_name)
+    s = BBFS(file_name)
     print(s)
