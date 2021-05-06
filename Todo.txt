@@ -1,6 +1,4 @@
-function haye morede niaz baraye piade saazi:
+TO DO and Bugs:
 
-1. harekate mojaz dar har marhale + olaviate harekat
-2. bade har herakt age kare bud koja mire
-3. flag barayte tedade kare
-4. age 2 ta kare tuye ye rasta bashe zure robot nmirese(in tasir gozare tuye harekate mojaze robot)
+1. get_all_permitted_movements function does not return correct permitted movements!
+2. when environment is updated, robot coordinates are not correct (for example we have two robots in an environment)
