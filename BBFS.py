@@ -193,7 +193,7 @@
 # 		print(f"Path does not exist between {src} and {dest}")
 
 from AdditionalFunctions import *
-from IDS import Node
+import Node
 
 def print_frontier(frontier):
     for f in frontier:
