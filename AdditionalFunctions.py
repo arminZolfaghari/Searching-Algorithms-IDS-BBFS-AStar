@@ -48,26 +48,29 @@ def read_file(file_name):
 def move_forward(environment, next_move, robot_coordinates):
     num_rows, num_cols = len(environment), len(environment[0])
 
-    if next_move == 'u':
-        robot_coordinates['x'] -= 1
+    # if next_move == 'u':
+    #     robot_coordinates['x'] -= 1
+    #
+    # elif next_move == 'd':
+    #     robot_coordinates['x'] += 1
+    #
+    # elif next_move == 'r':
+    #     robot_coordinates['y'] += 1
+    #
+    # elif next_move == 'l':
+    #     robot_coordinates['y'] -= 1
 
-    elif next_move == 'd':
-        robot_coordinates['x'] += 1
+    new_robot_coordinates = dsum(robot_coordinates, movement_to_coordinate[next_move])
 
-    elif next_move == 'r':
-        robot_coordinates['y'] += 1
-
-    elif next_move == 'l':
-        robot_coordinates['y'] -= 1
-
-    robot_new_coordinates = {"x": robot_coordinates['x'], "y": robot_coordinates["y"]}
     # robot is not allowed to go outside the environment
-    if 0 <= robot_new_coordinates['x'] < num_rows and 0 <= robot_new_coordinates['y'] < num_cols:
+    if 0 <= new_robot_coordinates['x'] < num_rows and 0 <= new_robot_coordinates['y'] < num_cols:
+        print(robot_coordinates)
         print(next_move)
-        print(robot_new_coordinates)
-        return True, robot_new_coordinates
+        print(new_robot_coordinates)
+        print("----------------------------")
+        return True, new_robot_coordinates
     else:
-        return False, robot_new_coordinates
+        return False, new_robot_coordinates
 
 
 # def move_backward(next_move, robot_coordinates):
@@ -100,16 +103,18 @@ def check_next_move(environment, next_move, robot_coordinates):
         if ('x' or 'p' or 'rp') in environment[robot_next_coordinates.get('x')][robot_next_coordinates.get('y')]:
             return False
 
-        # robot can't push two cells both with butter or after butter cell, cell is x
-        is_two_step_available, robot_2next_coordinates = move_forward(environment, next_move, robot_next_coordinates)
-        if is_two_step_available:
-            if 'b' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']] and 'b' in environment[
-                robot_2next_coordinates['x']][robot_2next_coordinates['y']]:
-                return False
-            if 'b' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']] and 'x' in environment[
-                robot_2next_coordinates['x'][robot_2next_coordinates['y']]]:
-                return False
+        if 'b' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']]:
+            # robot can't push two cells both with butter or after butter cell, cell is x
+            is_two_step_available, robot_2next_coordinates = move_forward(environment, next_move,
+                                                                          robot_next_coordinates)
+            if is_two_step_available:
+                if 'b' in environment[robot_2next_coordinates['x']][robot_2next_coordinates['y']]:
+                    return False
+                if 'x' in environment[robot_2next_coordinates['x'][robot_2next_coordinates['y']]]:
+                    return False
 
+            else:
+                return True
         else:
             return True
 
