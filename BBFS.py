@@ -240,6 +240,14 @@ def bfs_forward(node, frontier):
     return frontier
 
 
+def bfs_backward(node, frontier):
+
+    # create children of the node (permitted movements are needed)
+    # for each child create its node and add it to the backward frontier
+    
+    return frontier
+
+
 def BBFS(environment, robot_coordinates, file_name):
 
     environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(file_name)
@@ -249,6 +257,7 @@ def BBFS(environment, robot_coordinates, file_name):
     initial_node = Node(environment, robot_coordinates, 0, ' ', 'parent')
     forward_frontier.insert(0, initial_node)
 
+    # this function returns all the possible goal states. but it's not enough. nodes are needed for backward bfs.
     goal_environments = generate_all_goal_environment(file_name)
 
     # create childern of initial node and then create childern in a loop until we reach Goal state
@@ -259,7 +268,7 @@ def BBFS(environment, robot_coordinates, file_name):
 
         # backward dfs should be called here
         if len(backward_frontier) > 0:
-            backward_frontier = bfs_backward()
+            backward_frontier = bfs_backward(backward_frontier.pop(0), backward_frontier)
 
         is_end, intersected_node = end_checker(forward_frontier, backward_frontier)
         if is_end:
