@@ -65,10 +65,6 @@ def move_forward(environment, next_move, robot_coordinates):
 
     # robot is not allowed to go outside the environment
     if 0 <= new_robot_coordinates['x'] < num_rows and 0 <= new_robot_coordinates['y'] < num_cols:
-        print(robot_coordinates)
-        print(next_move)
-        print(new_robot_coordinates)
-        print("----------------------------")
         return True, new_robot_coordinates
     else:
         return False, new_robot_coordinates
@@ -202,15 +198,15 @@ def find_butters_coordinates():
     return plates_coordinates
 
 
-def generate_all_goal_environment():
+def generate_all_goal_environment(file_name):
     environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
-        "test1.txt")
-    print(environment_without_cost)
+        file_name)
+
     start_robot_x_coordinates, start_robot_y_coordinates = robot_coordinates['x'], robot_coordinates['y']
     all_plates_coordinates = find_plates_coordinates()
-    print(all_plates_coordinates)
+
     all_butters_coordinates = find_butters_coordinates()
-    print(all_butters_coordinates)
+
 
     for plate_coordinates in all_plates_coordinates:
         plate_x_coordinate, plate_y_coordinate = plate_coordinates['x'], plate_coordinates['y']
@@ -224,7 +220,6 @@ def generate_all_goal_environment():
     for plate_coordinates in all_plates_coordinates:
         plate_x_coordinate, plate_y_coordinate = plate_coordinates['x'], plate_coordinates['y']
         all_permitted_movements = get_all_permitted_movements(environment_without_cost, plate_coordinates)
-        print(all_permitted_movements)
         for movement in all_permitted_movements:
             final_robot_coordinates = dsum(plate_coordinates, movement_to_coordinate[movement])
             all_final_robot_coordinates.append(final_robot_coordinates)
@@ -232,10 +227,9 @@ def generate_all_goal_environment():
     environment_without_cost[start_robot_x_coordinates][start_robot_y_coordinates] = ""
     all_goal_environment = []
     for final_robot_coordinates in all_final_robot_coordinates:
-        goal_environment = environment_without_cost
+        goal_environment = copy.deepcopy(environment_without_cost)
         final_robot_x_coordinates, final_robot_y_coordinates = final_robot_coordinates['x'], final_robot_coordinates[
             'y']
-        print(final_robot_coordinates)
         goal_environment[final_robot_x_coordinates][final_robot_y_coordinates] = 'r'
         all_goal_environment.append(goal_environment)
 
@@ -243,6 +237,6 @@ def generate_all_goal_environment():
 
 
 if __name__ == "__main__":
-    arr = generate_all_goal_environment()
+    arr = generate_all_goal_environment("test1.txt")
     for ele in arr:
         print(ele)

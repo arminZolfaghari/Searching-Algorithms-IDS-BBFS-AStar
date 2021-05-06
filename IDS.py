@@ -14,6 +14,13 @@ def create_child(node, frontier):
     return frontier
 
 
+# depth limited search
+def dls(node, goal_state, max_depth):
+    if node in goal_state:
+        return True
+    if max_depth <= 0:
+        return False
+
 
     # def create_child(self, frontier):
     #     curr_environment, curr_robot_coordinates, curr_depth = self.environment, self.robot_coordinates, self.depth
