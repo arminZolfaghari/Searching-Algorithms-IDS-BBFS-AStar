@@ -226,8 +226,11 @@ def bfs_forward(node, frontier):
         # print('new env: ', new_environment)
         # print('curr env: ', node.environment)
         # new states should be checked. they should not be repetetive states.
-        if new_environment != node.parent.environment:
-            child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement)
+        if node.parent == 'parent':
+            child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
+            frontier.append(child_node)
+        if new_environment != node.parent.enviroment:
+            child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
             frontier.append(child_node)
 
     print('frontier len is:', len(frontier))
@@ -237,13 +240,16 @@ def bfs_forward(node, frontier):
     return frontier
 
 
-def BBFS(environment, robot_coordinates):
+def BBFS(environment, robot_coordinates, file_name):
+
+    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(file_name)
 
     forward_frontier, backward_frontier = [], []
     # initialize robot coordinates to initial node
-    initial_node = Node(environment, robot_coordinates, 0, ' ')
+    initial_node = Node(environment, robot_coordinates, 0, ' ', 'parent')
     forward_frontier.insert(0, initial_node)
 
+    goal_environments = generate_all_goal_environment(file_name)
 
     # create childern of initial node and then create childern in a loop until we reach Goal state
     for i in range(100):
@@ -261,12 +267,11 @@ def BBFS(environment, robot_coordinates):
 
     # find and print final path
 
-    return "finish"
+    return "path"
 
 
 if __name__ == '__main__':
-    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
-        "test1.txt")
-    print('environment without cost: \n', environment_without_cost)
-    s = BBFS(environment_without_cost, robot_coordinates)
+
+    file_name = 'test1.txt'
+    s = BBFS(environment_without_cost, robot_coordinates, file_name)
     print(s)
