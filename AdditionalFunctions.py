@@ -1,4 +1,5 @@
 from collections import defaultdict
+import copy
 
 
 # read file and return information about environment
@@ -92,15 +93,13 @@ def move_forward(environment, next_move, robot_coordinates):
 # it takes the enviroment, our next move and robot coordinates as input and checks whether the robot can make this
 # move or not
 def check_next_move(environment, next_move, robot_coordinates):
-    num_rows, num_cols = len(environment), len(environment[0])
-
     is_first_step_available, robot_next_coordinates = move_forward(environment, next_move, robot_coordinates)
     if not is_first_step_available:
         return False
 
     else:
-        # robot is not allowed to go to the cells with x or p in it
-        if ('x' or 'p' or 'rp') in environment[robot_next_coordinates.get('x')][robot_next_coordinates.get('y')]:
+        # robot is not allowed to go to the cells with x or bp in it
+        if ('x' or 'bp') in environment[robot_next_coordinates.get('x')][robot_next_coordinates.get('y')]:
             return False
 
         if 'b' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']]:
@@ -147,21 +146,32 @@ def update_environment(environment, current_robot_coordinates, movement):
     curr_robot_x_coordinate, curr_robot_y_coordinate = current_robot_coordinates['x'], current_robot_coordinates['y']
     new_robot_x_coordinate, new_robot_y_coordinate = new_robot_coordinates['x'], new_robot_coordinates['y']
 
+    new_environment = copy.deepcopy(environment)
+
     # next robot coordinates have butter
-    if environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'b':
+    if new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'b':
         new_butter_coordinates = dsum(new_robot_coordinates, movement_to_coordinate[movement])
         new_butter_x_coordinate, new_butter_y_coordinate = new_butter_coordinates['x'], new_butter_coordinates['y']
 
         # next butter coordinates have plate
-        if environment[new_butter_x_coordinate][new_butter_y_coordinate] == 'p':
-            environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'bp'
+        if new_environment[new_butter_x_coordinate][new_butter_y_coordinate] == 'p':
+            new_environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'bp'
         else:
-            environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'b'
+            new_environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'b'
 
-    environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
-    environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
-    return environment, new_robot_coordinates
+    # next robot coordinates have plate
+    elif new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'p':
+        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'rp'
+
+    else:
+        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+
+    return new_environment, new_robot_coordinates
 
 
 def find_plates_coordinates():
@@ -234,4 +244,5 @@ def generate_all_goal_environment():
 
 if __name__ == "__main__":
     arr = generate_all_goal_environment()
-    print(arr)
+    for ele in arr:
+        print(ele)
