@@ -1,28 +1,19 @@
 from collections import defaultdict
 from AdditionalFunctions import *
+from Node import *
 
 
 def create_child(node, frontier):
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
-    print(curr_environment)
     for movement in all_permitted_movements:
-        print("_______________________")
         new_environment, new_robot_coordinates = update_environment(curr_environment, curr_robot_coordinates, movement)
-        print(curr_environment)
-        print(new_environment)
         child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement)
         frontier.insert(0, child_node)
 
     return frontier
 
 
-class Node:
-    def __init__(self, environment, robot_coordinates, depth, movement):
-        self.environment = environment
-        self.robot_coordinates = robot_coordinates
-        self.depth = depth
-        self.movement = movement
 
     # def create_child(self, frontier):
     #     curr_environment, curr_robot_coordinates, curr_depth = self.environment, self.robot_coordinates, self.depth
@@ -76,9 +67,8 @@ if __name__ == "__main__":
     start_node = Node(environment_without_cost, robot_coordinates, 0, " ")
     frontier = []
     new_frontier = create_child(start_node, frontier)
-    # new_frontier = create_child(start_node, frontier)
-    # for node in new_frontier:
-    #     print(node.environment)
+    for node in new_frontier:
+        print(node.environment)
 
 
     # g = Graph(7)
