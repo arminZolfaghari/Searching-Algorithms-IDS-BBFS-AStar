@@ -195,42 +195,51 @@
 from AdditionalFunctions import *
 from IDS import Node
 
-# creating children in BFS is no the same with IDS. in BFS children are added at the end of the frontier queue
-def create_child(node, frontier):
-	curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
-	print('curr env: \n', curr_environment)
-	print('curr robot coor \n', curr_robot_coordinates)
-	all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
-	print('*****************')
-	print('all permited movements: ', all_permitted_movements)
-	for movement in all_permitted_movements:
-	    new_environment, new_robot_coordinates = update_environment(
-	        curr_environment, curr_robot_coordinates, movement)
-	    child_node = Node(new_environment, new_robot_coordinates,
-	                      curr_depth + 1, movement)
-	    frontier.insert(-1, child_node)
+def print_frontier(frontier):
+    for f in frontier:
+        print('r in frontier: ', f.robot_coordinates)
 
-	return frontier
+# creating children in BFS is not the same with IDS. in BFS children are added at the end of the frontier queue
+def create_child(node, frontier):
+    curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
+    print('*****************')
+    print('curr env: \n', node.environment)
+    print('curr robot coor \n', node.robot_coordinates)
+    all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
+    print('all permited movements: ', all_permitted_movements)
+
+    for movement in all_permitted_movements:
+        # print('loop curr env is: ', node.environment)
+        new_environment, new_robot_coordinates = update_environment(node.environment, node.robot_coordinates, movement)
+        # print('for movement ', movement, 'robot coor is: ',new_robot_coordinates, 'environment is: ', new_environment)
+        child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement)
+        frontier.append(child_node)
+
+    print('frontier len is:', len(frontier))
+    print_frontier(frontier)
+    print('*****************')
+
+    return frontier
 
 
 def BBFS(environment, robot_coordinates):
 
-	frontier = []
-	# all_permitted_movements = get_all_permitted_movements(environment, robot_coordinates)
-	# initialize robot coordinates to initial node
-	initial_node = Node(environment, robot_coordinates, 0, ' ')
-	frontier.insert(0, initial_node)
-	
-	# create childern of initial node and then create childern in a loop
-	for i in range(100):
-		if len(frontier) > 0:
-			frontier = create_child(frontier.pop(0), frontier)
+    frontier = []
+    # initialize robot coordinates to initial node
+    initial_node = Node(environment, robot_coordinates, 0, ' ')
+    frontier.insert(0, initial_node)
 
-	return "finish"
+    # create childern of initial node and then create childern in a loop until we reach Goal state
+    for i in range(100):
+        if len(frontier) > 0:
+            frontier = create_child(frontier.pop(0), frontier)
+
+    return "finish"
 
 
 if __name__ == '__main__':
-	environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file("test1.txt")
-	print('environment without cost: \n', environment_without_cost)
-	s = BBFS(environment_without_cost,robot_coordinates)
-	print(s)
+    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
+        "test1.txt")
+    print('environment without cost: \n', environment_without_cost)
+    s = BBFS(environment_without_cost, robot_coordinates)
+    print(s)
