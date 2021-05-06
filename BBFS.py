@@ -239,15 +239,27 @@ def bfs_forward(node, frontier):
 
 def BBFS(environment, robot_coordinates):
 
-    forward_frontier = []
+    forward_frontier, backward_frontier = [], []
     # initialize robot coordinates to initial node
     initial_node = Node(environment, robot_coordinates, 0, ' ')
     forward_frontier.insert(0, initial_node)
 
+
     # create childern of initial node and then create childern in a loop until we reach Goal state
     for i in range(100):
+    # while True:
         if len(forward_frontier) > 0:
             forward_frontier = bfs_forward(forward_frontier.pop(0), forward_frontier)
+
+        # backward dfs should be called here
+        if len(backward_frontier) > 0:
+            backward_frontier = bfs_backward()
+
+        is_end, intersected_node = end_checker(forward_frontier, backward_frontier)
+        if is_end:
+            break
+
+    # find and print final path
 
     return "finish"
 
