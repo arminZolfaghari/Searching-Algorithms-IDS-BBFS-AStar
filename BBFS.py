@@ -199,8 +199,19 @@ def print_frontier(frontier):
     for f in frontier:
         print('r in frontier: ', f.robot_coordinates)
 
+
+# this function checks whether we reach the end of the BBFS Algorithm or not. 
+# if two exact environments in forward frontier and backward frontier are found then it's finished.
+def end_checker(forward_frontier, backward_frontier):
+    for forward_node in forward_frontier:
+        for backward_node in backward_frontier:
+            if forward_node.environment == backward_node.environment:
+                return True, forward_node
+    return False, forward_node  # this node is not important.
+
+
 # creating children in BFS is not the same with IDS. in BFS children are added at the end of the frontier queue
-def create_child(node, frontier):
+def bfs_forward(node, frontier):
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
     print('*****************')
     print('curr env: \n', node.environment)
@@ -212,8 +223,12 @@ def create_child(node, frontier):
         # print('loop curr env is: ', node.environment)
         new_environment, new_robot_coordinates = update_environment(node.environment, node.robot_coordinates, movement)
         # print('for movement ', movement, 'robot coor is: ',new_robot_coordinates, 'environment is: ', new_environment)
-        child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement)
-        frontier.append(child_node)
+        # print('new env: ', new_environment)
+        # print('curr env: ', node.environment)
+        # new states should be checked. they should not be repetetive states.
+        if new_environment != node.parent.environment:
+            child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement)
+            frontier.append(child_node)
 
     print('frontier len is:', len(frontier))
     print_frontier(frontier)
@@ -224,15 +239,15 @@ def create_child(node, frontier):
 
 def BBFS(environment, robot_coordinates):
 
-    frontier = []
+    forward_frontier = []
     # initialize robot coordinates to initial node
     initial_node = Node(environment, robot_coordinates, 0, ' ')
-    frontier.insert(0, initial_node)
+    forward_frontier.insert(0, initial_node)
 
     # create childern of initial node and then create childern in a loop until we reach Goal state
     for i in range(100):
-        if len(frontier) > 0:
-            frontier = create_child(frontier.pop(0), frontier)
+        if len(forward_frontier) > 0:
+            forward_frontier = bfs_forward(forward_frontier.pop(0), forward_frontier)
 
     return "finish"
 
