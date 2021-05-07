@@ -1,4 +1,4 @@
 TO DO and Bugs:
 
-1. get_all_permitted_movements function does not return correct permitted movements!
-2. when environment is updated, robot coordinates are not correct (for example we have two robots in an environment)
+1. find path in BBFS
+2. A*
