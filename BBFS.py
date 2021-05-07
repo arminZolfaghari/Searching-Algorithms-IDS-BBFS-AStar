@@ -1,6 +1,7 @@
 from AdditionalFunctions import *
 from Node import Node, Initial_node
-import copy
+import copy, time
+
 
 def print_environment(environment):
     for r in environment:
@@ -11,9 +12,11 @@ def print_environment(environment):
                 print(c,end = " ")
         print()
 
+
 def print_frontier(frontier):
     for f in frontier:
         print('r in frontier: ', f.robot_coordinates)
+
 
 # this function checks whether we reach the end of the BBFS Algorithm or not.
 # if two exact environments in forward frontier and backward frontier are found then it's finished.
@@ -41,9 +44,8 @@ def bfs_forward(node, frontier):
 
     return frontier
 
+
 # this function return the cell in  environment if we move in the oposite direction of movement.
-
-
 def reverse_movement(environment, robot_coordinates, movement, is_goal):
 
     num_rows, num_cols = len(environment), len(environment[0])
@@ -69,12 +71,9 @@ def reverse_movement(environment, robot_coordinates, movement, is_goal):
         return environment[robot_coordinates['x']][robot_coordinates['y']-1]
 
 
-move_to_coordinate = {'u': {"x": -1},
-                      'r': {"y": +1}, 'd': {"x": +1}, 'l': {"y": -1}}
+move_to_coordinate = {'u': {"x": -1},'r': {"y": +1}, 'd': {"x": +1}, 'l': {"y": -1}}
 
 # this function updates environment backward (from goal state to initial state).
-
-
 def update_environment_backward(environment, current_robot_coordinates, movement):
 
     new_robot_coordinates = dsum(
@@ -167,7 +166,6 @@ def find_move(src_node, dest_node):
         return 'd'
 
 
-
 def find_path(intersected_node, backward_node, goal_environments):
 
     path, path2 = [], []
@@ -237,14 +235,26 @@ def print_path(path):
         print_environment(node.environment)
 
 
+def write_to_file(test_case, movement_list, duration):
+    f = open("result BBFS.txt", "a")
+    f.write(test_case)
+    f.write("\npath is: ")
+    f.write(' --> '.join(movement_list))
+    f.write('\nduration: ')
+    f.write(str("{:.2f}".format(duration)))
+    f.write("\n**************************")
 
 if __name__ == '__main__':
 
     file_name = 'test1.txt'
+    start_time = time.time()
     path = BBFS(file_name)
+    finish_time = time.time()
+    duration = (finish_time - start_time)
     movement_list = []
     for p in path:
         movement_list.append(p.movement)
     movement_list.pop(0)
     print('path is: ', movement_list)
     print_path(path)
+    write_to_file(file_name, movement_list, duration)
