@@ -1,0 +1,7 @@
+depth , duration
+test1 => 10 , 4s
+test2 => 12 , 4.6 s
+test3 => 14 , ziaddd
+test4 => cant (max cut off = 15) , 44s 
+test5 => 11, 18s
+test6 => 9, 0.56s
