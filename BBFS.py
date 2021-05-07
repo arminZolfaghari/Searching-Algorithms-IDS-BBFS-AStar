@@ -40,19 +40,28 @@ def bfs_forward(node, frontier):
     return frontier
 
 # this function return the cell in  environment if we move in the oposite direction of movement. 
-def reverse_movement(environment, robot_coordinates, movement):
+def reverse_movement(environment, robot_coordinates, movement, is_goal):
         
     num_rows, num_cols = len(environment), len(environment[0])
-    if movement == 'u' and robot_coordinates['x']+1 <= num_rows:
+
+    if movement == 'u' and robot_coordinates['x']+1 < num_rows:
+        if is_goal:
+            environment[robot_coordinates['x']+1][robot_coordinates['y']]  = 'p'
         return environment[robot_coordinates['x']+1][robot_coordinates['y']] 
 
     elif movement == 'd' and robot_coordinates['x']-1 >= 0:
+        if is_goal:
+            environment[robot_coordinates['x']-1][robot_coordinates['y']] = 'p'
         return environment[robot_coordinates['x']-1][robot_coordinates['y']] 
 
-    elif movement == 'r' and robot_coordinates['y']+1 <= num_cols:
-        return environment[robot_coordinates['x']][robot_coordinates['y']+1] 
+    elif movement == 'l' and robot_coordinates['y']+1 < num_cols:
+        if is_goal:
+            environment[robot_coordinates['x']][robot_coordinates['y']+1] = 'p'
+        return environment[robot_coordinates['x']][robot_coordinates['y']+1]
 
-    elif movement == 'l' and robot_coordinates['y']-1 >= 0:
+    elif movement == 'r' and robot_coordinates['y']-1 >= 0:
+        if is_goal:
+            environment[robot_coordinates['x']][robot_coordinates['y']-1] = 'p'
         return environment[robot_coordinates['x']][robot_coordinates['y']-1] 
 
 
@@ -88,13 +97,13 @@ def update_environment_backward(environment, current_robot_coordinates, movement
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'rp'
 
     # set new coordinates for butter
-    elif reverse_movement(new_environment, current_robot_coordinates, movement) == 'b':
+    elif reverse_movement(new_environment, current_robot_coordinates, movement, False) == 'b':
         new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'b'
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
     # if butter is on goal state
-    elif reverse_movement(new_environment, current_robot_coordinates, movement) == 'bp':
-        reverse_movement(new_environment, current_robot_coordinates, movement) = 'p'    # not sure!
+    elif reverse_movement(new_environment, current_robot_coordinates, movement, False) == 'bp':
+        reverse_movement(new_environment, current_robot_coordinates, movement, True)
         new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'b'
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
@@ -112,14 +121,13 @@ def bfs_backward(node, frontier):
     print('*****************')
     print('curr env: \n', node.environment)
     print('curr robot coor \n', node.robot_coordinates)
-    all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
+    all_permitted_movements = get_all_permitted_movements(node.environment, node.robot_coordinates)
     print('all permited movements: ', all_permitted_movements)
 
     for movement in all_permitted_movements:
         # print('loop curr env is: ', node.environment)
         new_environment, new_robot_coordinates = update_environment_backward(node.environment, node.robot_coordinates, movement)
         print('for movement ', movement, 'robot coor is: ',new_robot_coordinates, 'environment is: ', new_environment)
-        # print('new env: ', new_environment)
         # new states should be checked. they should not be repetetive states.
         if new_environment != node.parent.environment:
             child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
@@ -135,7 +143,7 @@ def create_final_nodes(goal_environments, goal_robots_coordinates):
 
     backward_frontier = []
     initial_node = Initial_node([])
-    for i in len(goal_environments):    # or len(goal_robots_coordinates) it doesn't matter
+    for i in range(len(goal_environments)):    # or len(goal_robots_coordinates) it doesn't matter
         backward_frontier.append(Node(goal_environments[i], goal_robots_coordinates[i], 0, ' ', initial_node))
 
     return backward_frontier

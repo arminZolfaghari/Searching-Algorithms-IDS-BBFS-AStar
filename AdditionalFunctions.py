@@ -95,7 +95,7 @@ def check_next_move(environment, next_move, robot_coordinates):
 
     else:
         # robot is not allowed to go to the cells with x or bp in it
-        if ('x' or 'bp') in environment[robot_next_coordinates['x']][robot_next_coordinates['y']]:
+        if 'bp' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']] or 'x' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']]:
             return False
 
         if 'b' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']]:
