@@ -8,4 +8,5 @@ class Node:
 
 class Initial_node:
     def __init__(self, environment):
+        self.depth = -1
         self.environment = environment
