@@ -192,14 +192,13 @@ def find_butters_coordinates(file_name):
         file_name)
     num_rows, num_cols = len(environment_without_cost), len(environment_without_cost[0])
 
-
-    plates_coordinates = []
+    butters_coordinates = []
     for i in range(num_rows):
         for j in range(num_cols):
             if environment_without_cost[i][j] == 'b':
-                plates_coordinates.append({"x": i, "y": j})
+                butters_coordinates.append({"x": i, "y": j})
 
-    return plates_coordinates
+    return butters_coordinates
 
 
 def generate_all_goal_environment(file_name):

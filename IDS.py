@@ -1,6 +1,7 @@
 from collections import defaultdict
 from AdditionalFunctions import *
 from Node import *
+import time
 
 
 # def create_child(node, frontier):
@@ -26,24 +27,20 @@ def create_child(node):
 
 
 # depth limited search
-movements = []
+nodes = []
 
 
 def dls(start_node, all_goal_environment, max_depth):
     if start_node.environment in all_goal_environment:
-        movements.append(start_node.movement)
-        return movements
+        return [start_node]
     if max_depth <= 0:
         return []
 
     children = create_child(start_node)
     for child in children:
-        print(child.environment)
-        movement = dls(child, all_goal_environment, max_depth - 1)
-        if len(movement) > 0:
-            movements.append(child.movement)
-            return movements
-        print("________________________________________________________________")
+        nodes = dls(child, all_goal_environment, max_depth - 1)
+        if len(nodes) > 0:
+            return nodes + [child]
     return []
 
     # def create_child(self, frontier):
@@ -62,48 +59,41 @@ def dls(start_node, all_goal_environment, max_depth):
     #     return frontier
 
 
-class Graph:
-    def __init__(self, vertices):
-        self.V = vertices
-        self.graph = defaultdict(list)
-
-    # for add edge to graph
-    def addEdge(self, u, v):
-        self.graph[u].append(v)
-
-    # Depth Limited Search
-    def DLS(self, src, target, max_depth):
-        if src == target:
-            return True
-        if max_depth <= 0:
-            return False
-        # Recursive for all the vertices adjacent to this vertex
-        for v in self.graph[src]:
-            if self.DLS(v, target, max_depth - 1):
-                return True
-        return False
-
-    # Recursive DLS (Iterative Deepening Search)
-    def IDS(self, src, target, max_depth):
-        for depth in range(max_depth):
-            if self.DLS(src, target, depth):
-                return True
-        return False
-
-
+# It uses recursive dls()
 def ids(first_node, all_goal_environment, max_depth):
-    for depth in range(max_depth + 1):
-        movements = dls(first_node, all_goal_environment, depth)
-        if len(movements):
-            return movements
+    for depth in range(max_depth):
+        nodes = dls(first_node, all_goal_environment, depth)
+        if len(nodes):
+            return nodes
     return []
 
 
+def start_ids_algorithm(test_case_file, max_depth):
+    environment = read_file(test_case_file)[1]
+    robot_coordinates = read_file(test_case_file)[4]
+    all_goal_environment = generate_all_goal_environment(test_case_file)[0]
+    root_node = Node(environment, robot_coordinates, 0, "", "")
+    start_time = time.time()
+    path_to_goal_nodes = ids(root_node, all_goal_environment, max_depth)
+    finish_time = time.time()
+    duration = (finish_time - start_time)
+
+    print(environment)
+    if len(path_to_goal_nodes) > 0:
+        print_path_with_nodes(path_to_goal_nodes[1:])
+    else:
+        print("can't pass the butter")
+
+    print("depth : ", len(path_to_goal_nodes[1:]))
+    print("duration(s) : ", duration)
+
+
+def print_path_with_nodes(arr):
+    for node in reversed(arr):
+        print("*********************************************************")
+        print(node.movement)
+        print(node.environment)
+
+
 if __name__ == "__main__":
-    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
-        "test3.txt")
-    print(environment_without_cost)
-    all_goal_environment, all_goal_robot_coordinates = generate_all_goal_environment("test3.txt")
-    print(all_goal_environment)
-    start_node = Node(environment_without_cost, robot_coordinates, 0, "", "")
-    print(ids(start_node, all_goal_environment, 15))
+    start_ids_algorithm("test5.txt", 12)
