@@ -29,13 +29,16 @@ def end_checker(forward_frontier, backward_frontier):
 
 
 # creating children in BFS is not the same with IDS. in BFS children are added at the end of the frontier queue
-def bfs_forward(node, frontier):
+def bfs(node, frontier, direction):
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
 
     for movement in all_permitted_movements:
-        new_environment, new_robot_coordinates = update_environment(
-            node.environment, node.robot_coordinates, movement)
+        if direction == 'forward':
+            new_environment, new_robot_coordinates = update_environment(node.environment, node.robot_coordinates, movement)
+        elif direction == 'backward':
+            new_environment, new_robot_coordinates = update_environment_backward(node.environment, node.robot_coordinates, movement)
+
         # new states should be checked. they should not be repetetive states.
         if new_environment != node.parent.environment:
             child_node = Node(
@@ -128,21 +131,6 @@ def update_environment_backward(environment, current_robot_coordinates, movement
     return new_environment, new_robot_coordinates
 
 
-def bfs_backward(node, frontier):
-
-    curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
-    all_permitted_movements = get_all_permitted_movements(node.environment, node.robot_coordinates)
-
-    for movement in all_permitted_movements:
-        new_environment, new_robot_coordinates = update_environment_backward(node.environment, node.robot_coordinates, movement)
-        # new states should be checked. they should not be repetetive states.
-        if new_environment != node.parent.environment:
-            child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
-            frontier.append(child_node)
-
-    return frontier
-
-
 def create_final_nodes(goal_environments, goal_robots_coordinates):
 
     backward_frontier = []
@@ -212,11 +200,11 @@ def BBFS(file_name):
     # create childern of initial node and then create childern in a loop until we reach Goal state
     while True:
         if len(forward_frontier) > 0:
-            forward_frontier = bfs_forward(forward_frontier.pop(0), forward_frontier)
+            forward_frontier = bfs(forward_frontier.pop(0), forward_frontier, 'forward')
 
         # backward dfs should be called here
         if len(backward_frontier) > 0:
-            backward_frontier = bfs_backward(backward_frontier.pop(0), backward_frontier)
+            backward_frontier = bfs(backward_frontier.pop(0), backward_frontier, 'backward')
 
         # environment with no solution should be handled
         is_end, intersected_node, backward_node = end_checker(forward_frontier, backward_frontier)
@@ -259,5 +247,3 @@ if __name__ == '__main__':
     print('path is: ', movement_list)
     print_path(path)
     write_to_file(file_name, movement_list, duration)
-
-    print('tessss')
