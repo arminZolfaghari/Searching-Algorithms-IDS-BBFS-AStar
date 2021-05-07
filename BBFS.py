@@ -100,23 +100,24 @@ def update_environment_backward(environment, current_robot_coordinates, movement
     new_environment = copy.deepcopy(environment)
 
     # next robot coordinates have butter
-    if new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'b':
-        new_butter_coordinates = dsum(
-            new_robot_coordinates, move_to_coordinate[movement])
-        new_butter_x_coordinate, new_butter_y_coordinate = new_butter_coordinates[
-            'x'], new_butter_coordinates['y']
+    # if new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'b':
 
-        # next butter coordinates have plate
-        if new_environment[new_butter_x_coordinate][new_butter_y_coordinate] == 'p':
-            new_environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'bp'
-        else:
-            new_environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'b'
+    #     new_butter_coordinates = dsum(
+    #         new_robot_coordinates, move_to_coordinate[movement])
+    #     new_butter_x_coordinate, new_butter_y_coordinate = new_butter_coordinates[
+    #         'x'], new_butter_coordinates['y']
 
-        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
-        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+    #     # next butter coordinates have plate
+    #     if new_environment[new_butter_x_coordinate][new_butter_y_coordinate] == 'p':
+    #         new_environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'bp'
+    #     else:
+    #         new_environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'b'
+
+    #     new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+    #     new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
     # next robot coordinates have plate
-    elif new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'p':
+    if new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'p':
         new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'rp'
 
@@ -246,7 +247,7 @@ def write_to_file(test_case, movement_list, duration):
 
 if __name__ == '__main__':
 
-    file_name = 'test2.txt'
+    file_name = 'test4.txt'
     start_time = time.time()
     path = BBFS(file_name)
     finish_time = time.time()
