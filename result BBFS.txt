@@ -58,3 +58,19 @@ test2.txt
 path is: u --> l --> l --> d --> u --> r --> r --> d --> d --> l --> l --> l
 duration: 19.93
 **************************
+test2.txt
+path is: u --> l --> l --> d --> u --> r --> r --> d --> d --> l --> l --> u --> d --> l
+duration: 0.13
+**************************
+test2.txt
+path is: u --> l --> l --> d --> u --> r --> r --> d --> d --> l --> l --> u --> d --> l
+duration: 0.14
+**************************
+test2.txt
+path is: u --> l --> l --> d --> u --> r --> r --> d --> d --> l --> l --> l
+duration: 0.05
+**************************
+test2.txt
+path is: u --> l --> l --> d --> u --> r --> r --> d --> d --> l --> l --> u --> l --> u --> r --> d --> d --> l
+duration: 0.08
+**************************

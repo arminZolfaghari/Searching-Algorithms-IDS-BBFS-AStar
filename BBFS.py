@@ -33,6 +33,7 @@ def bfs(node, frontier, direction):
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
 
+    all_children = []
     for movement in all_permitted_movements:
         if direction == 'forward':
             new_environment, new_robot_coordinates = update_environment(node.environment, node.robot_coordinates, movement)
@@ -43,7 +44,17 @@ def bfs(node, frontier, direction):
         if new_environment != node.parent.environment:
             child_node = Node(
                 new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
-            frontier.append(child_node)
+            # frontier.append(child_node)
+            all_children.append(child_node)
+
+    for child in all_children:
+        is_unique = True
+        for node in frontier:
+            if child.environment == node.environment:
+                is_unique = False
+                break
+        if is_unique:
+            frontier.append(child)
 
     return frontier
 
