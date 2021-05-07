@@ -95,21 +95,24 @@ def check_next_move(environment, next_move, robot_coordinates):
 
     else:
         # robot is not allowed to go to the cells with x or bp in it
-        if ('x' or 'bp') in environment[robot_next_coordinates.get('x')][robot_next_coordinates.get('y')]:
+        if ('x' or 'bp') in environment[robot_next_coordinates['x']][robot_next_coordinates['y']]:
             return False
 
         if 'b' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']]:
             # robot can't push two cells both with butter or after butter cell, cell is x
-            is_two_step_available, robot_2next_coordinates = move_forward(environment, next_move,
+            is_two_step_available, butter_next_coordinates = move_forward(environment, next_move,
                                                                           robot_next_coordinates)
-            if is_two_step_available:
-                if 'b' in environment[robot_2next_coordinates['x']][robot_2next_coordinates['y']]:
-                    return False
-                if 'x' in environment[robot_2next_coordinates['x'][robot_2next_coordinates['y']]]:
-                    return False
+            if not is_two_step_available:
+                return False
 
             else:
-                return True
+                if 'b' in environment[butter_next_coordinates['x']][butter_next_coordinates['y']]:
+                    return False
+                if 'x' in environment[butter_next_coordinates['x']][butter_next_coordinates['y']]:
+                    return False
+                else:
+                    return True
+
         else:
             return True
 
@@ -170,9 +173,9 @@ def update_environment(environment, current_robot_coordinates, movement):
     return new_environment, new_robot_coordinates
 
 
-def find_plates_coordinates():
+def find_plates_coordinates(file_name):
     environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
-        "test1.txt")
+        file_name)
     num_rows, num_cols = len(environment_without_cost), len(environment_without_cost[0])
 
     plates_coordinates = []
@@ -184,10 +187,11 @@ def find_plates_coordinates():
     return plates_coordinates
 
 
-def find_butters_coordinates():
+def find_butters_coordinates(file_name):
     environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
-        "test1.txt")
+        file_name)
     num_rows, num_cols = len(environment_without_cost), len(environment_without_cost[0])
+
 
     plates_coordinates = []
     for i in range(num_rows):
@@ -203,10 +207,9 @@ def generate_all_goal_environment(file_name):
         file_name)
 
     start_robot_x_coordinates, start_robot_y_coordinates = robot_coordinates['x'], robot_coordinates['y']
-    all_plates_coordinates = find_plates_coordinates()
+    all_plates_coordinates = find_plates_coordinates(file_name)
 
-    all_butters_coordinates = find_butters_coordinates()
-
+    all_butters_coordinates = find_butters_coordinates(file_name)
 
     for plate_coordinates in all_plates_coordinates:
         plate_x_coordinate, plate_y_coordinate = plate_coordinates['x'], plate_coordinates['y']
@@ -226,17 +229,19 @@ def generate_all_goal_environment(file_name):
 
     environment_without_cost[start_robot_x_coordinates][start_robot_y_coordinates] = ""
     all_goal_environment = []
+    all_goal_robot_coordinates = []
     for final_robot_coordinates in all_final_robot_coordinates:
         goal_environment = copy.deepcopy(environment_without_cost)
         final_robot_x_coordinates, final_robot_y_coordinates = final_robot_coordinates['x'], final_robot_coordinates[
             'y']
         goal_environment[final_robot_x_coordinates][final_robot_y_coordinates] = 'r'
         all_goal_environment.append(goal_environment)
+        all_goal_robot_coordinates.append(final_robot_coordinates)
 
-    return all_goal_environment
+    return all_goal_environment, all_goal_robot_coordinates
 
 
 if __name__ == "__main__":
-    arr = generate_all_goal_environment("test1.txt")
-    for ele in arr:
-        print(ele)
+    arr1, arr2 = generate_all_goal_environment("test6.txt")
+    for i in arr1:
+        print(i)

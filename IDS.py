@@ -3,24 +3,48 @@ from AdditionalFunctions import *
 from Node import *
 
 
-def create_child(node, frontier):
+# def create_child(node, frontier):
+#     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
+#     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
+#     for movement in all_permitted_movements:
+#         new_environment, new_robot_coordinates = update_environment(curr_environment, curr_robot_coordinates, movement)
+#         child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
+#         frontier.insert(0, child_node)
+#
+#     return frontier
+
+def create_child(node):
+    children_arr = []
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
     for movement in all_permitted_movements:
         new_environment, new_robot_coordinates = update_environment(curr_environment, curr_robot_coordinates, movement)
-        child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement)
-        frontier.insert(0, child_node)
+        child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
+        children_arr.insert(0, child_node)
 
-    return frontier
+    return children_arr
 
 
 # depth limited search
-def dls(node, goal_state, max_depth):
-    if node in goal_state:
-        return True
-    if max_depth <= 0:
-        return False
+movements = []
 
+
+def dls(start_node, all_goal_environment, max_depth):
+    if start_node.environment in all_goal_environment:
+        movements.append(start_node.movement)
+        return movements
+    if max_depth <= 0:
+        return []
+
+    children = create_child(start_node)
+    for child in children:
+        print(child.environment)
+        movement = dls(child, all_goal_environment, max_depth - 1)
+        if len(movement) > 0:
+            movements.append(child.movement)
+            return movements
+        print("________________________________________________________________")
+    return []
 
     # def create_child(self, frontier):
     #     curr_environment, curr_robot_coordinates, curr_depth = self.environment, self.robot_coordinates, self.depth
@@ -67,27 +91,19 @@ class Graph:
         return False
 
 
+def ids(first_node, all_goal_environment, max_depth):
+    for depth in range(max_depth + 1):
+        movements = dls(first_node, all_goal_environment, depth)
+        if len(movements):
+            return movements
+    return []
+
+
 if __name__ == "__main__":
     environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
-        "test1.txt")
+        "test3.txt")
     print(environment_without_cost)
-    start_node = Node(environment_without_cost, robot_coordinates, 0, " ")
-    frontier = []
-    new_frontier = create_child(start_node, frontier)
-    for node in new_frontier:
-        print(node.environment)
-
-
-    # g = Graph(7)
-    # g.addEdge(0, 1)
-    # g.addEdge(0, 2)
-    # g.addEdge(1, 3)
-    # g.addEdge(1, 4)
-    # g.addEdge(2, 5)
-    # g.addEdge(2, 6)
-    #
-    # target = 6
-    # maxDepth = 3
-    # src = 0
-    #
-    # print(g.IDS(src, target, maxDepth))
+    all_goal_environment, all_goal_robot_coordinates = generate_all_goal_environment("test3.txt")
+    print(all_goal_environment)
+    start_node = Node(environment_without_cost, robot_coordinates, 0, "", "")
+    print(ids(start_node, all_goal_environment, 15))
