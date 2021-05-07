@@ -1,199 +1,6 @@
-# class AdjacentNode:
-
-# 	def __init__(self, vertex):
-
-# 		self.vertex = vertex
-# 		self.next = None
-
-# # BidirectionalSearch implementation
-# class BidirectionalSearch:
-
-# 	def __init__(self, vertices):
-
-# 		# Initialize vertices and
-# 		# graph with vertices
-# 		self.vertices = vertices
-# 		self.graph = [None] * self.vertices
-
-# 		# Initializing queue for forward
-# 		# and backward search
-# 		self.src_queue = list()
-# 		self.dest_queue = list()
-
-# 		# Initializing source and
-# 		# destination visited nodes as False
-# 		self.src_visited = [False] * self.vertices
-# 		self.dest_visited = [False] * self.vertices
-
-# 		# Initializing source and destination
-# 		# parent nodes
-# 		self.src_parent = [None] * self.vertices
-# 		self.dest_parent = [None] * self.vertices
-
-# 	# Function for adding undirected edge
-# 	def add_edge(self, src, dest):
-
-# 		# Add edges to graph
-
-# 		# Add source to destination
-# 		node = AdjacentNode(dest)
-# 		node.next = self.graph[src]
-# 		self.graph[src] = node
-
-# 		# Since graph is undirected add
-# 		# destination to source
-# 		node = AdjacentNode(src)
-# 		node.next = self.graph[dest]
-# 		self.graph[dest] = node
-
-# 	# Function for Breadth First Search
-# 	def bfs(self, direction = 'forward'):
-
-# 		if direction == 'forward':
-
-# 			# BFS in forward direction
-# 			current = self.src_queue.pop(0)
-# 			connected_node = self.graph[current]
-
-# 			while connected_node:
-# 				vertex = connected_node.vertex
-
-# 				if not self.src_visited[vertex]:
-# 					self.src_queue.append(vertex)
-# 					self.src_visited[vertex] = True
-# 					self.src_parent[vertex] = current
-
-# 				connected_node = connected_node.next
-# 		else:
-
-# 			# BFS in backward direction
-# 			current = self.dest_queue.pop(0)
-# 			connected_node = self.graph[current]
-
-# 			while connected_node:
-# 				vertex = connected_node.vertex
-
-# 				if not self.dest_visited[vertex]:
-# 					self.dest_queue.append(vertex)
-# 					self.dest_visited[vertex] = True
-# 					self.dest_parent[vertex] = current
-
-# 				connected_node = connected_node.next
-
-# 	# Check for intersecting vertex
-# 	def is_intersecting(self):
-
-# 		# Returns intersecting node
-# 		# if present else -1
-# 		for i in range(self.vertices):
-# 			if (self.src_visited[i] and
-# 				self.dest_visited[i]):
-# 				return i
-
-# 		return -1
-
-# 	# Print the path from source to target
-# 	def print_path(self, intersecting_node,
-# 				src, dest):
-
-# 		# Print final path from
-# 		# source to destination
-# 		path = list()
-# 		path.append(intersecting_node)
-# 		i = intersecting_node
-
-# 		while i != src:
-# 			path.append(self.src_parent[i])
-# 			i = self.src_parent[i]
-
-# 		path = path[::-1]
-# 		i = intersecting_node
-
-# 		while i != dest:
-# 			path.append(self.dest_parent[i])
-# 			i = self.dest_parent[i]
-
-# 		print("*****Path*****")
-# 		path = list(map(str, path))
-
-# 		print(' '.join(path))
-
-# 	# Function for bidirectional searching
-# 	def bidirectional_search(self, src, dest):
-
-# 		# Add source to queue and mark
-# 		# visited as True and add its
-# 		# parent as -1
-# 		self.src_queue.append(src)
-# 		self.src_visited[src] = True
-# 		self.src_parent[src] = -1
-
-# 		# Add destination to queue and
-# 		# mark visited as True and add
-# 		# its parent as -1
-# 		self.dest_queue.append(dest)
-# 		self.dest_visited[dest] = True
-# 		self.dest_parent[dest] = -1
-
-# 		while self.src_queue and self.dest_queue:
-
-# 			# BFS in forward direction from
-# 			# Source Vertex
-# 			self.bfs(direction = 'forward')
-
-# 			# BFS in reverse direction
-# 			# from Destination Vertex
-# 			self.bfs(direction = 'backward')
-
-# 			# Check for intersecting vertex
-# 			intersecting_node = self.is_intersecting()
-
-# 			# If intersecting vertex exists
-# 			# then path from source to
-# 			# destination exists
-# 			if intersecting_node != -1:
-# 				print(f"Path exists between {src} and {dest}")
-# 				print(f"Intersection at : {intersecting_node}")
-# 				self.print_path(intersecting_node,
-# 								src, dest)
-# 				exit(0)
-# 		return -1
-
-# if __name__ == '__main__':
-
-# 	# Number of Vertices in graph
-# 	n = 15
-
-# 	# Source Vertex
-# 	src = 0
-
-# 	# Destination Vertex
-# 	dest = 14
-
-# 	# Create a graph
-# 	graph = BidirectionalSearch(n)
-# 	graph.add_edge(0, 4)
-# 	graph.add_edge(1, 4)
-# 	graph.add_edge(2, 5)
-# 	graph.add_edge(3, 5)
-# 	graph.add_edge(4, 6)
-# 	graph.add_edge(5, 6)
-# 	graph.add_edge(6, 7)
-# 	graph.add_edge(7, 8)
-# 	graph.add_edge(8, 9)
-# 	graph.add_edge(8, 10)
-# 	graph.add_edge(9, 11)
-# 	graph.add_edge(9, 12)
-# 	graph.add_edge(10, 13)
-# 	graph.add_edge(10, 14)
-
-# 	out = graph.bidirectional_search(src, dest)
-
-# 	if out == -1:
-# 		print(f"Path does not exist between {src} and {dest}")
-
 from AdditionalFunctions import *
 from Node import Node, Initial_node
+import copy
 
 def print_frontier(frontier):
     for f in frontier:
@@ -220,13 +27,8 @@ def bfs_forward(node, frontier):
     print('all permited movements: ', all_permitted_movements)
 
     for movement in all_permitted_movements:
-        # print('loop curr env is: ', node.environment)
         new_environment, new_robot_coordinates = update_environment(node.environment, node.robot_coordinates, movement)
-        # print('for movement ', movement, 'robot coor is: ',new_robot_coordinates, 'environment is: ', new_environment)
-        # print('new env: ', new_environment)
-        # print('curr env: ', node.environment)
         # new states should be checked. they should not be repetetive states.
-
         if new_environment != node.parent.environment:
             child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
             frontier.append(child_node)
@@ -237,13 +39,109 @@ def bfs_forward(node, frontier):
 
     return frontier
 
+# this function return the cell in  environment if we move in the oposite direction of movement. 
+def reverse_movement(environment, robot_coordinates, movement):
+        
+    num_rows, num_cols = len(environment), len(environment[0])
+    if movement == 'u' and robot_coordinates['x']+1 <= num_rows:
+        return environment[robot_coordinates['x']+1][robot_coordinates['y']] 
+
+    elif movement == 'd' and robot_coordinates['x']-1 >= 0:
+        return environment[robot_coordinates['x']-1][robot_coordinates['y']] 
+
+    elif movement == 'r' and robot_coordinates['y']+1 <= num_cols:
+        return environment[robot_coordinates['x']][robot_coordinates['y']+1] 
+
+    elif movement == 'l' and robot_coordinates['y']-1 >= 0:
+        return environment[robot_coordinates['x']][robot_coordinates['y']-1] 
+
+
+
+move_to_coordinate = {'u': {"x": -1}, 'r': {"y": +1}, 'd': {"x": +1}, 'l': {"y": -1}}
+
+# this function updates environment backward (from goal state to initial state).
+def update_environment_backward(environment, current_robot_coordinates, movement):
+
+    new_robot_coordinates = dsum(current_robot_coordinates, move_to_coordinate[movement])
+    curr_robot_x_coordinate, curr_robot_y_coordinate = current_robot_coordinates['x'], current_robot_coordinates['y']
+    new_robot_x_coordinate, new_robot_y_coordinate = new_robot_coordinates['x'], new_robot_coordinates['y']
+
+    new_environment = copy.deepcopy(environment)
+
+    # next robot coordinates have butter
+    if new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'b':
+        new_butter_coordinates = dsum(new_robot_coordinates, move_to_coordinate[movement])
+        new_butter_x_coordinate, new_butter_y_coordinate = new_butter_coordinates['x'], new_butter_coordinates['y']
+
+        # next butter coordinates have plate
+        if new_environment[new_butter_x_coordinate][new_butter_y_coordinate] == 'p':
+            new_environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'bp'
+        else:
+            new_environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'b'
+
+        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+
+    # next robot coordinates have plate
+    elif new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'p':
+        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'rp'
+
+    # set new coordinates for butter
+    elif reverse_movement(new_environment, current_robot_coordinates, movement) == 'b':
+        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'b'
+        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+
+    # if butter is on goal state
+    elif reverse_movement(new_environment, current_robot_coordinates, movement) == 'bp':
+        reverse_movement(new_environment, current_robot_coordinates, movement) = 'p'    # not sure!
+        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'b'
+        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+
+    else:
+        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+
+    return new_environment, new_robot_coordinates
+
+
 
 def bfs_backward(node, frontier):
 
     # create children of the node (permitted movements are needed)
     # for each child create its node and add it to the backward frontier
+    curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
+    print('*****************')
+    print('curr env: \n', node.environment)
+    print('curr robot coor \n', node.robot_coordinates)
+    all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
+    print('all permited movements: ', all_permitted_movements)
+
+    for movement in all_permitted_movements:
+        # print('loop curr env is: ', node.environment)
+        new_environment, new_robot_coordinates = update_environment_backward(node.environment, node.robot_coordinates, movement)
+        # print('for movement ', movement, 'robot coor is: ',new_robot_coordinates, 'environment is: ', new_environment)
+        # print('new env: ', new_environment)
+        # print('curr env: ', node.environment)
+        # new states should be checked. they should not be repetetive states.
+        if new_environment != node.parent.environment:
+            child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
+            frontier.append(child_node)
+
+    print('backward frontier len is:', len(frontier))
+    print_frontier(frontier)
+    print('*****************')
     
     return frontier
+
+def create_final_nodes(goal_environments, goal_robots_coordinates):
+
+    backward_frontier = []
+    initial_node = Initial_node([])
+    for i in len(goal_environments):    # or len(goal_robots_coordinates) it doesn't matter
+        backward_frontier.append(Node(goal_environments[i], goal_robots_coordinates[i], 0, , initial_node))
+
+    return backward_frontier
 
 
 def BBFS(file_name):
@@ -257,7 +155,7 @@ def BBFS(file_name):
     forward_frontier.insert(0, starting_node)
 
     # this function returns all the possible goal states. but it's not enough. nodes are needed for backward bfs.
-    goal_environments = generate_all_goal_environment(file_name)
+    goal_environments, goal_robots_coordinates = generate_all_goal_environment(file_name)
 
     # create childern of initial node and then create childern in a loop until we reach Goal state
     for i in range(100):
@@ -268,6 +166,8 @@ def BBFS(file_name):
         # backward dfs should be called here
         if len(backward_frontier) > 0:
             backward_frontier = bfs_backward(backward_frontier.pop(0), backward_frontier)
+
+        # environment with no solution should be handled
 
         is_end, intersected_node = end_checker(forward_frontier, backward_frontier)
         if is_end:
