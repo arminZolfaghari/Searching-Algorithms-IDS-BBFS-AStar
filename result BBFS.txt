@@ -1,4 +1,48 @@
 test1.txt
-path is: r --> d --> r --> u --> r --> d --> d --> u --> u --> r --> d --> d --> d --> l
-duration: 0.45
+path is: d --> r --> r --> u --> r --> d --> d --> r --> d --> l
+duration: 0.75
+**************************
+test2.txt
+path is: u --> l --> l --> d --> u --> r --> r --> d --> d --> l --> l --> l
+duration: 5.54
+**************************
+test5.txt
+path is: u --> l --> d --> d --> r --> d --> l --> l --> r --> r --> u --> l --> d --> d --> l --> l --> u
+duration: 3.28
+**************************
+test5.txt
+path is: u --> l --> d --> d --> r --> d --> l --> l --> d --> l --> u
+duration: 5.90
+**************************
+test5.txt
+path is: u --> l --> d --> d --> r --> d --> l --> l --> d --> l --> u
+duration: 6.20
+**************************
+test5.txt
+path is: u --> l --> d --> d --> r --> d --> l --> l --> d --> l --> u
+duration: 6.84
+**************************
+test1.txt
+path is: d --> r --> r --> u --> r --> d --> d --> r --> d --> l
+duration: 0.75
+**************************
+test1.txt
+path is: d --> r --> r --> u --> r --> d --> d --> r --> d --> l
+duration: 0.21
+**************************
+test1.txt
+path is: d --> r --> r --> u --> r --> d --> d --> r --> d --> l
+duration: 0.23
+**************************
+test2.txt
+path is: u --> l --> l --> d --> u --> r --> r --> d --> d --> l --> l --> u --> l --> u --> r --> d --> d --> l
+duration: 4.06
+**************************
+test2.txt
+path is: u --> l --> l --> d --> u --> r --> r --> d --> d --> l --> l --> l
+duration: 17.70
+**************************
+test2.txt
+path is: u --> l --> l --> d --> u --> r --> r --> d --> d --> l --> l --> l
+duration: 15.32
 **************************

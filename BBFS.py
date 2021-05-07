@@ -21,8 +21,8 @@ def print_frontier(frontier):
 # this function checks whether we reach the end of the BBFS Algorithm or not.
 # if two exact environments in forward frontier and backward frontier are found then it's finished.
 def end_checker(forward_frontier, backward_frontier):
-    for forward_node in forward_frontier:
-        for backward_node in backward_frontier:
+    for forward_node in reversed(forward_frontier):
+        for backward_node in reversed(backward_frontier):
             if forward_node.environment == backward_node.environment:
                 return True, forward_node, backward_node.parent
     return False, forward_node, backward_node  # these nodes are not important.
@@ -242,11 +242,12 @@ def write_to_file(test_case, movement_list, duration):
     f.write(' --> '.join(movement_list))
     f.write('\nduration: ')
     f.write(str("{:.2f}".format(duration)))
-    f.write("\n**************************")
+    f.write("\n**************************\n")
+
 
 if __name__ == '__main__':
 
-    file_name = 'test1.txt'
+    file_name = 'test2.txt'
     start_time = time.time()
     path = BBFS(file_name)
     finish_time = time.time()
