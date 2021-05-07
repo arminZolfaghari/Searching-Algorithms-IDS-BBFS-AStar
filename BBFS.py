@@ -259,3 +259,5 @@ if __name__ == '__main__':
     print('path is: ', movement_list)
     print_path(path)
     write_to_file(file_name, movement_list, duration)
+
+    print('tessss')

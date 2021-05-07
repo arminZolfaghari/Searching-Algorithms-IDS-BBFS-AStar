@@ -96,4 +96,4 @@ def print_path_with_nodes(arr):
 
 
 if __name__ == "__main__":
-    start_ids_algorithm("test5.txt", 12)
+    start_ids_algorithm("test1.txt", 15)
