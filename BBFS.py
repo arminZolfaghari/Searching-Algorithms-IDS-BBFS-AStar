@@ -108,8 +108,6 @@ def update_environment_backward(environment, current_robot_coordinates, movement
 
 def bfs_backward(node, frontier):
 
-    # create children of the node (permitted movements are needed)
-    # for each child create its node and add it to the backward frontier
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
     print('*****************')
     print('curr env: \n', node.environment)
@@ -120,9 +118,8 @@ def bfs_backward(node, frontier):
     for movement in all_permitted_movements:
         # print('loop curr env is: ', node.environment)
         new_environment, new_robot_coordinates = update_environment_backward(node.environment, node.robot_coordinates, movement)
-        # print('for movement ', movement, 'robot coor is: ',new_robot_coordinates, 'environment is: ', new_environment)
+        print('for movement ', movement, 'robot coor is: ',new_robot_coordinates, 'environment is: ', new_environment)
         # print('new env: ', new_environment)
-        # print('curr env: ', node.environment)
         # new states should be checked. they should not be repetetive states.
         if new_environment != node.parent.environment:
             child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
@@ -139,7 +136,7 @@ def create_final_nodes(goal_environments, goal_robots_coordinates):
     backward_frontier = []
     initial_node = Initial_node([])
     for i in len(goal_environments):    # or len(goal_robots_coordinates) it doesn't matter
-        backward_frontier.append(Node(goal_environments[i], goal_robots_coordinates[i], 0, , initial_node))
+        backward_frontier.append(Node(goal_environments[i], goal_robots_coordinates[i], 0, ' ', initial_node))
 
     return backward_frontier
 
@@ -156,12 +153,13 @@ def BBFS(file_name):
 
     # this function returns all the possible goal states. but it's not enough. nodes are needed for backward bfs.
     goal_environments, goal_robots_coordinates = generate_all_goal_environment(file_name)
+    backward_frontier = create_final_nodes(goal_environments, goal_robots_coordinates)
 
     # create childern of initial node and then create childern in a loop until we reach Goal state
     for i in range(100):
     # while True:
-        if len(forward_frontier) > 0:
-            forward_frontier = bfs_forward(forward_frontier.pop(0), forward_frontier)
+        # if len(forward_frontier) > 0:
+        #     forward_frontier = bfs_forward(forward_frontier.pop(0), forward_frontier)
 
         # backward dfs should be called here
         if len(backward_frontier) > 0:
