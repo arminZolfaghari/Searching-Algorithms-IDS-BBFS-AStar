@@ -28,12 +28,7 @@ def end_checker(forward_frontier, backward_frontier):
 # creating children in BFS is not the same with IDS. in BFS children are added at the end of the frontier queue
 def bfs_forward(node, frontier):
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
-    # print('*****************')
-    # print('curr env: \n', node.environment)
-    # print('curr robot coor \n', node.robot_coordinates)
-    all_permitted_movements = get_all_permitted_movements(
-        curr_environment, curr_robot_coordinates)
-    # print('all permited movements: ', all_permitted_movements)
+    all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
 
     for movement in all_permitted_movements:
         new_environment, new_robot_coordinates = update_environment(
@@ -43,10 +38,6 @@ def bfs_forward(node, frontier):
             child_node = Node(
                 new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
             frontier.append(child_node)
-
-    # print('frontier len is:', len(frontier))
-    # print_frontier(frontier)
-    # print('*****************')
 
     return frontier
 
@@ -157,8 +148,7 @@ def create_final_nodes(goal_environments, goal_robots_coordinates):
 
     backward_frontier = []
     initial_node = Initial_node([])
-    # or len(goal_robots_coordinates) it doesn't matter
-    for i in range(len(goal_environments)):
+    for i in range(len(goal_environments)):    # or len(goal_robots_coordinates) it doesn't matter
         backward_frontier.append(
             Node(goal_environments[i], goal_robots_coordinates[i], 0, ' ', initial_node))
 
@@ -197,7 +187,7 @@ def find_path(intersected_node, backward_node, goal_environments):
             tmp_node_back = copy.deepcopy(tmp_node_back.parent)
 
     path2[0].movement = find_move(path[-1], path2[0])
-    for p in range(len(path2)):
+    for p in range(1, len(path2)):
         path2[p].movement = find_move(path2[p-1], path2[p])
     
     print(len(path2))
@@ -245,6 +235,7 @@ def print_path(path):
         print("*********************************************************")
         print(node.movement)
         print_environment(node.environment)
+
 
 
 if __name__ == '__main__':
