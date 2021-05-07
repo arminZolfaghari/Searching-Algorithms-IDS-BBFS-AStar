@@ -166,6 +166,10 @@ def update_environment(environment, current_robot_coordinates, movement):
         new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'rp'
 
+    elif new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == '' and new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] == 'rp':
+        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'p'
+        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+
     else:
         new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'

@@ -127,8 +127,7 @@ def update_environment_backward(environment, current_robot_coordinates, movement
 
     # if butter is on goal state
     elif reverse_movement(new_environment, current_robot_coordinates, movement, False) == 'bp':
-        reverse_movement(
-            new_environment, current_robot_coordinates, movement, True)
+        reverse_movement(new_environment, current_robot_coordinates, movement, True)
         new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'b'
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
@@ -142,23 +141,14 @@ def update_environment_backward(environment, current_robot_coordinates, movement
 def bfs_backward(node, frontier):
 
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
-    # print('*****************')
-    # print('curr env: \n', node.environment)
-    # print('curr robot coor \n', node.robot_coordinates)
     all_permitted_movements = get_all_permitted_movements(node.environment, node.robot_coordinates)
-    # print('all permited movements: ', all_permitted_movements)
 
     for movement in all_permitted_movements:
         new_environment, new_robot_coordinates = update_environment_backward(node.environment, node.robot_coordinates, movement)
-        # print('for movement ', movement, 'robot coor is: ',new_robot_coordinates, 'environment is: ', new_environment)
         # new states should be checked. they should not be repetetive states.
         if new_environment != node.parent.environment:
             child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
             frontier.append(child_node)
-
-    # print('backward frontier len is:', len(frontier))
-    # print_frontier(frontier)
-    # print('*****************')
 
     return frontier
 
@@ -259,7 +249,7 @@ def print_path(path):
 
 if __name__ == '__main__':
 
-    file_name = 'test2.txt'
+    file_name = 'test1.txt'
     path = BBFS(file_name)
     movement_list = []
     for p in path:
