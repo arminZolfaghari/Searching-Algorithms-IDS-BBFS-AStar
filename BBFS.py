@@ -18,11 +18,26 @@ def print_frontier(frontier):
         print('r in frontier: ', f.robot_coordinates)
 
 
+# sorting using bubble sort
+def sort_list(array):
+    
+    new_array = copy.deepcopy(array)
+    for i in range(len(array)):
+
+        already_sorted = True
+        for j in range(len(new_array) - i - 1):
+            if new_array[j].depth > new_array[j + 1].depth:
+                new_array[j], new_array[j + 1] = new_array[j + 1], new_array[j]
+                already_sorted = False
+        if already_sorted:
+            break
+    return new_array
+
 # this function checks whether we reach the end of the BBFS Algorithm or not.
 # if two exact environments in forward frontier and backward frontier are found then it's finished.
 def end_checker(forward_frontier, backward_frontier):
-    for forward_node in reversed(forward_frontier):
-        for backward_node in reversed(backward_frontier):
+    for forward_node in forward_frontier:
+        for backward_node in backward_frontier:
             if forward_node.environment == backward_node.environment:
                 return True, forward_node, backward_node.parent
     return False, forward_node, backward_node  # these nodes are not important.
@@ -42,17 +57,26 @@ def bfs(node, frontier, direction):
 
         # new states should be checked. they should not be repetetive states.
         if new_environment != node.parent.environment:
-            child_node = Node(
-                new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
-            # frontier.append(child_node)
+            child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
             all_children.append(child_node)
 
     for child in all_children:
         is_unique = True
-        for node in frontier:
-            if child.environment == node.environment:
+        is_deeper = False
+        for node_index in range(len(frontier)):
+            if child.environment == frontier[node_index].environment and child.depth > frontier[node_index].depth:
                 is_unique = False
+                is_deeper = True
+                print('here')
                 break
+            elif child.environment == frontier[node_index].environment and child.depth < frontier[node_index].depth:
+                is_unique = False
+                is_deeper = False
+                print('child depth:', child.depth)
+                print('frontier[node_index] depth:', frontier[node_index].depth)
+                frontier[node_index] = child
+                break
+
         if is_unique:
             frontier.append(child)
 
@@ -98,23 +122,6 @@ def update_environment_backward(environment, current_robot_coordinates, movement
         'x'], new_robot_coordinates['y']
 
     new_environment = copy.deepcopy(environment)
-
-    # next robot coordinates have butter
-    # if new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'b':
-
-    #     new_butter_coordinates = dsum(
-    #         new_robot_coordinates, move_to_coordinate[movement])
-    #     new_butter_x_coordinate, new_butter_y_coordinate = new_butter_coordinates[
-    #         'x'], new_butter_coordinates['y']
-
-    #     # next butter coordinates have plate
-    #     if new_environment[new_butter_x_coordinate][new_butter_y_coordinate] == 'p':
-    #         new_environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'bp'
-    #     else:
-    #         new_environment[new_butter_x_coordinate][new_butter_y_coordinate] = 'b'
-
-    #     new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
-    #     new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
     # next robot coordinates have plate
     if new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'p':
@@ -247,7 +254,7 @@ def write_to_file(test_case, movement_list, duration):
 
 if __name__ == '__main__':
 
-    file_name = 'test4.txt'
+    file_name = 'test1.txt'
     start_time = time.time()
     path = BBFS(file_name)
     finish_time = time.time()
