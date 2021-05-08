@@ -2,6 +2,7 @@ from AdditionalFunctions import *
 from Node import Node, Initial_node
 import copy, time
 
+move_to_coordinate = {'u': {"x": -1},'r': {"y": +1}, 'd': {"x": +1}, 'l': {"y": -1}}
 
 def print_environment(environment):
     for r in environment:
@@ -16,22 +17,6 @@ def print_environment(environment):
 def print_frontier(frontier):
     for f in frontier:
         print('r in frontier: ', f.robot_coordinates)
-
-
-# sorting using bubble sort
-def sort_list(array):
-    
-    new_array = copy.deepcopy(array)
-    for i in range(len(array)):
-
-        already_sorted = True
-        for j in range(len(new_array) - i - 1):
-            if new_array[j].depth > new_array[j + 1].depth:
-                new_array[j], new_array[j + 1] = new_array[j + 1], new_array[j]
-                already_sorted = False
-        if already_sorted:
-            break
-    return new_array
 
 # this function checks whether we reach the end of the BBFS Algorithm or not.
 # if two exact environments in forward frontier and backward frontier are found then it's finished.
@@ -62,21 +47,10 @@ def bfs(node, frontier, direction):
 
     for child in all_children:
         is_unique = True
-        is_deeper = False
-        for node_index in range(len(frontier)):
-            if child.environment == frontier[node_index].environment and child.depth > frontier[node_index].depth:
+        for node in frontier:
+            if child.environment == node.environment:
                 is_unique = False
-                is_deeper = True
-                print('here')
                 break
-            elif child.environment == frontier[node_index].environment and child.depth < frontier[node_index].depth:
-                is_unique = False
-                is_deeper = False
-                print('child depth:', child.depth)
-                print('frontier[node_index] depth:', frontier[node_index].depth)
-                frontier[node_index] = child
-                break
-
         if is_unique:
             frontier.append(child)
 
@@ -109,17 +83,12 @@ def reverse_movement(environment, robot_coordinates, movement, is_goal):
         return environment[robot_coordinates['x']][robot_coordinates['y']-1]
 
 
-move_to_coordinate = {'u': {"x": -1},'r': {"y": +1}, 'd': {"x": +1}, 'l': {"y": -1}}
-
 # this function updates environment backward (from goal state to initial state).
 def update_environment_backward(environment, current_robot_coordinates, movement):
 
-    new_robot_coordinates = dsum(
-        current_robot_coordinates, move_to_coordinate[movement])
-    curr_robot_x_coordinate, curr_robot_y_coordinate = current_robot_coordinates[
-        'x'], current_robot_coordinates['y']
-    new_robot_x_coordinate, new_robot_y_coordinate = new_robot_coordinates[
-        'x'], new_robot_coordinates['y']
+    new_robot_coordinates = dsum(current_robot_coordinates, move_to_coordinate[movement])
+    curr_robot_x_coordinate, curr_robot_y_coordinate = current_robot_coordinates['x'], current_robot_coordinates['y']
+    new_robot_x_coordinate, new_robot_y_coordinate = new_robot_coordinates['x'], new_robot_coordinates['y']
 
     new_environment = copy.deepcopy(environment)
 
@@ -230,6 +199,11 @@ def BBFS(file_name):
         if is_end:
             break
 
+        # check if we have answer at all!
+        if (forward_frontier[-1].depth + backward_frontier[-1].depth) > (len(environment_without_cost) * len(environment_without_cost[0])):
+            path = ['no answer']
+            return path
+
     # find and print final path
     path = find_path(intersected_node, backward_node, goal_environments)
     return path
@@ -254,15 +228,20 @@ def write_to_file(test_case, movement_list, duration):
 
 if __name__ == '__main__':
 
-    file_name = 'test1.txt'
+    file_name = 'test4.txt'
     start_time = time.time()
     path = BBFS(file_name)
     finish_time = time.time()
     duration = (finish_time - start_time)
+
     movement_list = []
-    for p in path:
-        movement_list.append(p.movement)
-    movement_list.pop(0)
-    print('path is: ', movement_list)
-    print_path(path)
-    write_to_file(file_name, movement_list, duration)
+    if path == ['no answer']:
+        print('there is no answer in this environment!')
+    else:
+        for p in path:
+            movement_list.append(p.movement)
+        movement_list.pop(0)
+        print('path length is: ', len(path))
+        print('path is: ', movement_list)
+        print_path(path)
+        write_to_file(file_name, movement_list, duration)
