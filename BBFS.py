@@ -42,7 +42,7 @@ def bfs(node, frontier, direction):
 
         # new states should be checked. they should not be repetetive states.
         if new_environment != node.parent.environment:
-            child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
+            child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node, "", "")
             all_children.append(child_node)
 
     for child in all_children:
@@ -125,7 +125,7 @@ def create_final_nodes(goal_environments, goal_robots_coordinates):
     initial_node = Initial_node([])
     for i in range(len(goal_environments)):    # or len(goal_robots_coordinates) it doesn't matter
         backward_frontier.append(
-            Node(goal_environments[i], goal_robots_coordinates[i], 0, ' ', initial_node))
+            Node(goal_environments[i], goal_robots_coordinates[i], 0, ' ', initial_node, "", ""))
 
     return backward_frontier
 
@@ -178,7 +178,7 @@ def BBFS(file_name):
     forward_frontier, backward_frontier = [], []
     # initialize robot coordinates to initial node
     initial_node = Initial_node([])
-    starting_node = Node(environment_without_cost, robot_coordinates, 0, ' ', initial_node)
+    starting_node = Node(environment_without_cost, robot_coordinates, 0, ' ', initial_node, "", "")
     forward_frontier.insert(0, starting_node)
 
     # this function returns all the possible goal states. but it's not enough. nodes are needed for backward bfs.
@@ -228,7 +228,7 @@ def write_to_file(test_case, movement_list, duration):
 
 if __name__ == '__main__':
 
-    file_name = 'test4.txt'
+    file_name = 'test1.txt'
     start_time = time.time()
     path = BBFS(file_name)
     finish_time = time.time()
