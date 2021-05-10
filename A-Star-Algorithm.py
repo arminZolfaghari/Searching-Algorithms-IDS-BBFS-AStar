@@ -80,12 +80,12 @@ def get_heuristic_point(point):
 
 # sort frontier list by cost nodes
 def sort_frontier_by_cost(frontier):
-    frontier.sort(key=lambda x: x.cost, reverse=False)
+    frontier.sort(key=lambda x: x.cost_f, reverse=False)
 
 
 # return cost of point
 def calculate_cost_f_node(new_cost_g, new_robot_coordinates, huerisitic_arr):
-    return new_cost_g + huerisitic_arr[new_robot_coordinates['x']][new_robot_coordinates['y']]
+    return int(new_cost_g) + huerisitic_arr[new_robot_coordinates['x']][new_robot_coordinates['y']]
 
 
 def calculate_cost_g_node(environment_cost, new_robot_coordinates, curr_cost_g):
@@ -131,12 +131,52 @@ def generate_node(node, envrironment_cost, hueristic_arr, frontier, explored):
         update_frontier_explored(frontier, explored, new_node)
 
 
+def expanding_node(node, environment_cost, hueristic_arr, frontier, explored):
+    generate_node(node, environment_cost, hueristic_arr, frontier, explored)
+    explored.append(node)
+
+
+def a_star_algorithm(start_node, max_depth, envrironment_cost, hueristic_arr, all_goal_environment):
+    frontier, explored = [start_node], []
+    expand_node = start_node
+    is_receive, goal_state = False, 0
+    while expand_node.depth <= max_depth:
+        if expand_node.environment in all_goal_environment:
+            is_receive, goal_state = True, expand_node
+            break
+        expanding_node(expand_node, envrironment_cost, hueristic_arr, frontier, explored)
+        frontier.remove(expand_node)
+
+        if len(frontier) == 0:
+            break
+        expand_node = frontier[0]
+
+    if is_receive:
+        return True, goal_state
+    else:
+        return False, "can't pass the butter"
+
+
+def start_a_star_algorithm(test_case_file, max_depth):
+    environment_without_cost = read_file(test_case_file)[1]
+    environment_cost = read_file(test_case_file)[2]
+    robot_coordinates = read_file(test_case_file)[4]
+    all_goal_environment = generate_all_goal_environment(test_case_file)[0]
+    arr_plates = find_plates_coordinates(test_case_file)
+    heuristic = calculate_heuristic_environment(arr_plates, environment_without_cost)
+    root_cost_g = environment_cost[robot_coordinates['x']][robot_coordinates['y']]
+    root_cost_f = heuristic[robot_coordinates['x']][robot_coordinates['y']]
+    root_node = Node(environment_without_cost, robot_coordinates, 0, "", "", root_cost_g, root_cost_f)
+
+    print(a_star_algorithm(root_node, max_depth, environment_cost, heuristic, all_goal_environment))
+
 
 if __name__ == "__main__":
-    environment_without_cost, environment_cost, robot_coordinates = read_file("test3.txt")[1], read_file("test3.txt")[
-        2], read_file("test3.txt")[4]
-    print(environment_without_cost)
-    arr_plates = find_plates_coordinates("test3.txt")
-    print(arr_plates)
-
-    print(calculate_heuristic_environment(arr_plates, environment_without_cost))
+    start_a_star_algorithm("test3.txt", 35)
+    # environment_without_cost, environment_cost, robot_coordinates = read_file("test3.txt")[1], read_file("test3.txt")[
+    #     2], read_file("test3.txt")[4]
+    # print(environment_without_cost)
+    # arr_plates = find_plates_coordinates("test3.txt")
+    # print(arr_plates)
+    #
+    # print(calculate_heuristic_environment(arr_plates, environment_without_cost))
