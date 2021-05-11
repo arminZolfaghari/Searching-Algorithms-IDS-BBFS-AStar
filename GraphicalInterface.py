@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import time
+from PIL import ImageTk, Image
 
 root = tk.Tk()
 
@@ -19,42 +20,44 @@ class GraphicalInterface():
         HEIGHT = num_rows * 100   
         root.geometry(f"{WIDTH}x{HEIGHT}")
         root.title('Path Finding!')
+        root.configure(bg='white')
         # root.resizable(0, 0)
 
         root.columnconfigure(0, weight=num_cols)
         root.columnconfigure(1, weight=num_rows)
+
+        x_image = ImageTk.PhotoImage(Image.open('./Assets/x.png').resize((100, 100),Image.ANTIALIAS))
+        cell_image = ImageTk.PhotoImage(Image.open('./Assets/cell.png').resize((100, 100),Image.ANTIALIAS))
+        robot_image = ImageTk.PhotoImage(Image.open('./Assets/robot.png').resize((100, 100),Image.ANTIALIAS))
+        plate_image = ImageTk.PhotoImage(Image.open('./Assets/plate.png').resize((100, 100),Image.ANTIALIAS))
+        butter_image = ImageTk.PhotoImage(Image.open('./Assets/butter.png').resize((100, 100),Image.ANTIALIAS))
 
         if step < len(path):
             for r in range(num_rows):
                 for c in range(num_cols):
 
                     if path[step].environment[r][c] == "x":
-                        photo = tk.PhotoImage(file='./Assets/x.png')
-                        label = ttk.Label(root, image=photo)
-                        label.grid(column=c, row=r, padx=5, pady=5)
+                        label = ttk.Label(root, image=x_image)
+                        label.grid(column=c, row=r)
                         
                     elif path[step].environment[r][c] == "":
-                        label = ttk.Label(root, text="cell")
-                        label.grid(column=c, row=r, padx=5, pady=5)
+                        label = ttk.Label(root, image=cell_image)
+                        label.grid(column=c, row=r)
                         
-                    elif path[step].environment[r][c] == "r":
-                        photo = tk.PhotoImage(file='./Assets/robot.png')
-                        label = ttk.Label(root, image=photo)
-                        label.grid(column=c, row=r, padx=5, pady=5) 
+                    elif path[step].environment[r][c] == "r" or path[step].environment[r][c] == "rp":
+                        label = ttk.Label(root, image=robot_image)
+                        label.grid(column=c, row=r) 
+
+                    elif path[step].environment[r][c] == "b" or path[step].environment[r][c] == "bp":
+                        label = ttk.Label(root, image=butter_image)
+                        label.grid(column=c, row=r)
 
                     elif path[step].environment[r][c] == "p":
-                        photo = tk.PhotoImage(file='./Assets/plate.png')
-                        label = ttk.Label(root, image=photo)
-                        label.grid(column=c, row=r, padx=5, pady=5)
-                        
-                    elif path[step].environment[r][c] == "b":
-                        photo = tk.PhotoImage(file='./Assets/butter2.png')
-                        label = ttk.Label(root, image=photo)
-                        label.grid(column=c, row=r, padx=5, pady=5)
+                        label = ttk.Label(root, image=plate_image)
+                        label.grid(column=c, row=r)
                         
 
             step += 1
-
             root.after(400, self.Visualize(path, step+1))
         root.mainloop()
 
