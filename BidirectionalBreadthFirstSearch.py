@@ -2,7 +2,8 @@ from AdditionalFunctions import *
 from Node import Node, Initial_node
 import copy, time
 
-move_to_coordinate = {'u': {"x": -1},'r': {"y": +1}, 'd': {"x": +1}, 'l': {"y": -1}}
+move_to_coordinate = {'u': {"x": -1}, 'r': {"y": +1}, 'd': {"x": +1}, 'l': {"y": -1}}
+
 
 # this function checks whether we reach the end of the BBFS Algorithm or not.
 # if two exact environments in forward frontier and backward frontier are found then it's finished.
@@ -23,9 +24,11 @@ def bfs(node, frontier, direction, nodes_info):
     all_children = []
     for movement in all_permitted_movements:
         if direction == 'forward':
-            new_environment, new_robot_coordinates = update_environment(node.environment, node.robot_coordinates, movement)
+            new_environment, new_robot_coordinates = update_environment(node.environment, node.robot_coordinates,
+                                                                        movement)
         elif direction == 'backward':
-            new_environment, new_robot_coordinates = update_environment_backward(node.environment, node.robot_coordinates, movement)
+            new_environment, new_robot_coordinates = update_environment_backward(node.environment,
+                                                                                 node.robot_coordinates, movement)
 
         # new states should be checked. they should not be repetetive states.
         if new_environment != node.parent.environment:
@@ -46,33 +49,31 @@ def bfs(node, frontier, direction, nodes_info):
 
 # this function return the cell in  environment if we move in the oposite direction of movement.
 def reverse_movement(environment, robot_coordinates, movement, is_goal):
-
     num_rows, num_cols = len(environment), len(environment[0])
 
-    if movement == 'u' and robot_coordinates['x']+1 < num_rows:
+    if movement == 'u' and robot_coordinates['x'] + 1 < num_rows:
         if is_goal:
-            environment[robot_coordinates['x']+1][robot_coordinates['y']] = 'p'
-        return environment[robot_coordinates['x']+1][robot_coordinates['y']]
+            environment[robot_coordinates['x'] + 1][robot_coordinates['y']] = 'p'
+        return environment[robot_coordinates['x'] + 1][robot_coordinates['y']]
 
-    elif movement == 'd' and robot_coordinates['x']-1 >= 0:
+    elif movement == 'd' and robot_coordinates['x'] - 1 >= 0:
         if is_goal:
-            environment[robot_coordinates['x']-1][robot_coordinates['y']] = 'p'
-        return environment[robot_coordinates['x']-1][robot_coordinates['y']]
+            environment[robot_coordinates['x'] - 1][robot_coordinates['y']] = 'p'
+        return environment[robot_coordinates['x'] - 1][robot_coordinates['y']]
 
-    elif movement == 'l' and robot_coordinates['y']+1 < num_cols:
+    elif movement == 'l' and robot_coordinates['y'] + 1 < num_cols:
         if is_goal:
-            environment[robot_coordinates['x']][robot_coordinates['y']+1] = 'p'
-        return environment[robot_coordinates['x']][robot_coordinates['y']+1]
+            environment[robot_coordinates['x']][robot_coordinates['y'] + 1] = 'p'
+        return environment[robot_coordinates['x']][robot_coordinates['y'] + 1]
 
-    elif movement == 'r' and robot_coordinates['y']-1 >= 0:
+    elif movement == 'r' and robot_coordinates['y'] - 1 >= 0:
         if is_goal:
-            environment[robot_coordinates['x']][robot_coordinates['y']-1] = 'p'
-        return environment[robot_coordinates['x']][robot_coordinates['y']-1]
+            environment[robot_coordinates['x']][robot_coordinates['y'] - 1] = 'p'
+        return environment[robot_coordinates['x']][robot_coordinates['y'] - 1]
 
 
 # this function updates environment backward (from goal state to initial state).
 def update_environment_backward(environment, current_robot_coordinates, movement):
-
     new_robot_coordinates = dsum(current_robot_coordinates, move_to_coordinate[movement])
     curr_robot_x_coordinate, curr_robot_y_coordinate = current_robot_coordinates['x'], current_robot_coordinates['y']
     new_robot_x_coordinate, new_robot_y_coordinate = new_robot_coordinates['x'], new_robot_coordinates['y']
@@ -84,7 +85,8 @@ def update_environment_backward(environment, current_robot_coordinates, movement
         new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'rp'
 
-    elif new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == '' and new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] == 'rp':
+    elif new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == '' and \
+            new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] == 'rp':
         new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'p'
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
@@ -107,29 +109,30 @@ def update_environment_backward(environment, current_robot_coordinates, movement
 
 
 def create_final_nodes(goal_environments, goal_robots_coordinates):
-
     backward_frontier = []
     initial_node = Initial_node([])
-    for i in range(len(goal_environments)):    # or len(goal_robots_coordinates) it doesn't matter
+    for i in range(len(goal_environments)):  # or len(goal_robots_coordinates) it doesn't matter
         backward_frontier.append(Node(goal_environments[i], goal_robots_coordinates[i], 0, ' ', initial_node, "", ""))
 
     return backward_frontier
 
 
 def find_move(src_node, dest_node):
-
-    if src_node.robot_coordinates['x'] == dest_node.robot_coordinates['x'] and src_node.robot_coordinates['y'] < dest_node.robot_coordinates['y']:
+    if src_node.robot_coordinates['x'] == dest_node.robot_coordinates['x'] and src_node.robot_coordinates['y'] < \
+            dest_node.robot_coordinates['y']:
         return 'r'
-    if src_node.robot_coordinates['x'] == dest_node.robot_coordinates['x'] and src_node.robot_coordinates['y'] > dest_node.robot_coordinates['y']:
+    if src_node.robot_coordinates['x'] == dest_node.robot_coordinates['x'] and src_node.robot_coordinates['y'] > \
+            dest_node.robot_coordinates['y']:
         return 'l'
-    if src_node.robot_coordinates['x'] > dest_node.robot_coordinates['x'] and src_node.robot_coordinates['y'] == dest_node.robot_coordinates['y']:
+    if src_node.robot_coordinates['x'] > dest_node.robot_coordinates['x'] and src_node.robot_coordinates['y'] == \
+            dest_node.robot_coordinates['y']:
         return 'u'
-    if src_node.robot_coordinates['x'] < dest_node.robot_coordinates['x'] and src_node.robot_coordinates['y'] == dest_node.robot_coordinates['y']:
+    if src_node.robot_coordinates['x'] < dest_node.robot_coordinates['x'] and src_node.robot_coordinates['y'] == \
+            dest_node.robot_coordinates['y']:
         return 'd'
 
 
 def find_path(intersected_node, backward_node, goal_environments):
-
     path, path2 = [], []
     tmp_node = copy.deepcopy(intersected_node)
     tmp_node_back = copy.deepcopy(backward_node)
@@ -148,8 +151,8 @@ def find_path(intersected_node, backward_node, goal_environments):
 
     path2[0].movement = find_move(path[-1], path2[0])
     for p in range(1, len(path2)):
-        path2[p].movement = find_move(path2[p-1], path2[p])
-    
+        path2[p].movement = find_move(path2[p - 1], path2[p])
+
     for p in path2:
         path.append(p)
 
@@ -157,12 +160,12 @@ def find_path(intersected_node, backward_node, goal_environments):
 
 
 def BBFS(file_name):
-
     # nodes_info = [num_created_nodes, num_expanded_nodes]
-    nodes_info = [0,0]
+    nodes_info = [0, 0]
 
     has_result = True
-    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(file_name)
+    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
+        file_name)
 
     forward_frontier, backward_frontier = [], []
     # initialize robot coordinates to initial node
@@ -193,7 +196,8 @@ def BBFS(file_name):
             break
 
         # check if we have answer at all!
-        if (forward_frontier[-1].depth + backward_frontier[-1].depth) > (len(environment_without_cost) * len(environment_without_cost[0])):
+        if (forward_frontier[-1].depth + backward_frontier[-1].depth) > (
+                len(environment_without_cost) * len(environment_without_cost[0])):
             path = ['no answer']
             has_result = False
             return has_result, path, nodes_info

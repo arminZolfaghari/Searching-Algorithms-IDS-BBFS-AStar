@@ -8,9 +8,6 @@ class Node:
         self.cost_g = cost_g
         self.cost_f = cost_f
 
-    # def __eq__(self, others):
-    #     if self.environment == others.environment
-
 
 class Initial_node:
     def __init__(self, environment):

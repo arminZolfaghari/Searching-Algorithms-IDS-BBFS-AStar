@@ -16,6 +16,7 @@ if __name__ == "__main__":
         duration = (finish_time - start_time)
         print("number of created nodes are:", nodes_info[0])
         print("number of expanded nodes are:", nodes_info[1])
+        print("duration is : ", duration)
 
         if not has_result:
             print('there is no answer in this environment!')
@@ -37,12 +38,14 @@ if __name__ == "__main__":
         duration = (finish_time - start_time)
         print("number of created nodes are:", nodes_info[0])
         print("number of expanded nodes are:", nodes_info[1])
+        print("duration is : ", duration)
+
 
         if not has_result:
             print('there is no answer in this environment!')
         else:
             movement_list = funcs.find_movement_list(path)
-            print('path length is: ', len(path))
+            print('depth of goal : ', len(path) - 1)
             print('path is: ', movement_list)
             funcs.print_path(path)
             g = gui.GraphicalInterface(path)
@@ -51,12 +54,14 @@ if __name__ == "__main__":
 
     elif algorithm == "3" or algorithm == "A*":
         start_time = time.time()
-        has_result, path, goal_depth, nodes_info = astar.start_a_star_algorithm(file_name, 35)
+        has_result, path, goal_depth, nodes_info = astar.start_a_star_algorithm(file_name, 20)
         finish_time = time.time()
         duration = (finish_time - start_time)
 
         print("number of created nodes are:", nodes_info[0])
         print("number of expanded nodes are:", nodes_info[1])
+        print("duration is : ", duration)
+
         if not has_result:
             print('there is no answer in this environment!')
         else:

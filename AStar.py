@@ -48,11 +48,9 @@ def calculate_distance_point_to_all_plates(point, plates_coordinates_arr):
         best_plate = find_closest_plate(point_copy, plates_coordinates_arr_copy)
         plates_coordinates_arr_copy.remove(best_plate)
         distance += calculate_manhattan_distance(point_copy, best_plate)
-        # print(point_copy)
-        # print(best_plate)
-        # print(distance)
+
         point_copy = best_plate
-    # print("***************")
+
 
     return distance
 
