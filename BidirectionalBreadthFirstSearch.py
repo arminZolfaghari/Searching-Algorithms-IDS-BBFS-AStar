@@ -158,6 +158,7 @@ def find_path(intersected_node, backward_node, goal_environments):
 
 def BBFS(file_name):
 
+    has_result = True
     environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(file_name)
 
     forward_frontier, backward_frontier = [], []
@@ -187,30 +188,9 @@ def BBFS(file_name):
         # check if we have answer at all!
         if (forward_frontier[-1].depth + backward_frontier[-1].depth) > (len(environment_without_cost) * len(environment_without_cost[0])):
             path = ['no answer']
-            return path
+            has_result = False
+            return has_result, path
 
     # find and print final path
     path = find_path(intersected_node, backward_node, goal_environments)
-    return path
-
-
-
-if __name__ == '__main__':
-
-    file_name = 'test1.txt'
-    start_time = time.time()
-    path = BBFS(file_name)
-    finish_time = time.time()
-    duration = (finish_time - start_time)
-
-    movement_list = []
-    if path == ['no answer']:
-        print('there is no answer in this environment!')
-    else:
-        for p in path:
-            movement_list.append(p.movement)
-        movement_list.pop(0)
-        print('path length is: ', len(path))
-        print('path is: ', movement_list)
-        print_path(path)
-        # write_to_file(file_name, movement_list, duration)
+    return has_result, path

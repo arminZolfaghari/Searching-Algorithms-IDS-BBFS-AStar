@@ -230,6 +230,15 @@ def print_path(path):
         print_environment(node.environment)
 
 
+def find_movement_list(path):
+    movement_list = []
+    for p in path:
+        movement_list.append(p.movement)
+    movement_list.pop(0)
+
+    return movement_list
+
+
 def write_to_file(algorithm, test_case, movement_list, duration):
 
     if algorithm == "IDS":

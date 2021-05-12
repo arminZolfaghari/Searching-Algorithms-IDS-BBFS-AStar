@@ -151,6 +151,17 @@ def a_star_algorithm(start_node, max_depth, envrironment_cost, hueristic_arr, al
         return False, "can't pass the butter"
 
 
+# get final node(goal state) and return path from start node to goal node
+def find_path_with_final_node(node):
+    path_by_nodes = []
+    pre_node = node
+
+    while pre_node != "":
+        path_by_nodes.append(pre_node)
+        pre_node = pre_node.parent
+
+    path_by_nodes.reverse()
+    return path_by_nodes
 
 
 def start_a_star_algorithm(test_case_file, max_depth):
@@ -171,13 +182,3 @@ def start_a_star_algorithm(test_case_file, max_depth):
         return result_of_a_star_algorithm, path, received_final_state.depth
     else:
         return result_of_a_star_algorithm, received_final_state, max_depth
-
-
-if __name__ == "__main__":
-    
-    result, path, goal_depth = start_a_star_algorithm("test5.txt", 35)
-
-    print("result : ", result)
-    print("path costs : ", path[-1].cost_g)
-    print(path)         # pass the gui
-    print("depth of goal : ", goal_depth)
