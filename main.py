@@ -12,9 +12,11 @@ if __name__ == "__main__":
 
     if algorithm == "1" or algorithm == "IDS":
         start_time = time.time()
-        has_result, path, goal_depth = ids.start_ids_algorithm(file_name, 20)
+        has_result, path, goal_depth, nodes_info = ids.start_ids_algorithm(file_name, 15)
         finish_time = time.time()
         duration = (finish_time - start_time)
+        print("number of created nodes are:", nodes_info[0])
+        print("number of expanded nodes are:", nodes_info[1])
 
         if not has_result:
             print('there is no answer in this environment!')
@@ -26,6 +28,7 @@ if __name__ == "__main__":
             g = gui.GraphicalInterface(path)
             g.Visualize()
             funcs.write_to_file("IDS", file_name, movement_list, duration)
+
 
     elif algorithm == "2" or algorithm == "BBFS":
         start_time = time.time()
@@ -48,9 +51,12 @@ if __name__ == "__main__":
 
     elif algorithm == "3" or algorithm == "A*":
         start_time = time.time()
-        has_result, path, goal_depth = astar.start_a_star_algorithm(file_name, 35)
+        has_result, path, goal_depth, nodes_info = astar.start_a_star_algorithm(file_name, 35)
         finish_time = time.time()
         duration = (finish_time - start_time)
+
+        print("number of created nodes are:", nodes_info[0])
+        print("number of expanded nodes are:", nodes_info[1])
         if not has_result:
             print('there is no answer in this environment!')
         else:

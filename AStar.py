@@ -114,6 +114,7 @@ def generate_node(node, envrironment_cost, hueristic_arr, frontier, explored):
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
     curr_cost_g, curr_cost_f = node.cost_g, node.cost_f
     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
+    num_of_generate = len(all_permitted_movements)
     for movement in all_permitted_movements:
         new_environment, new_robot_coordinates = update_environment(curr_environment, curr_robot_coordinates, movement)
         new_cost_g = calculate_cost_g_node(envrironment_cost, new_robot_coordinates, curr_cost_g)
@@ -121,21 +122,29 @@ def generate_node(node, envrironment_cost, hueristic_arr, frontier, explored):
         new_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node, new_cost_g, new_cost_f)
         update_frontier_explored(frontier, explored, new_node)
 
+    return num_of_generate
+
 
 def expanding_node(node, environment_cost, hueristic_arr, frontier, explored):
-    generate_node(node, environment_cost, hueristic_arr, frontier, explored)
+    num_of_generate = generate_node(node, environment_cost, hueristic_arr, frontier, explored)
     explored.append(node)
+    return num_of_generate
 
 
 def a_star_algorithm(start_node, max_depth, envrironment_cost, hueristic_arr, all_goal_environment):
     frontier, explored = [start_node], []
     expand_node = start_node
     is_receive, goal_state = False, 0
+    num_of_generate = 0
+    num_of_expand = 0
+
     while expand_node.depth <= max_depth:
         if expand_node.environment in all_goal_environment:
             is_receive, goal_state = True, expand_node
             break
-        expanding_node(expand_node, envrironment_cost, hueristic_arr, frontier, explored)
+        generate = expanding_node(expand_node, envrironment_cost, hueristic_arr, frontier, explored)
+        num_of_generate += generate
+        num_of_expand += 1
         frontier.remove(expand_node)
 
         if len(frontier) == 0:
@@ -143,9 +152,9 @@ def a_star_algorithm(start_node, max_depth, envrironment_cost, hueristic_arr, al
         expand_node = frontier[0]
 
     if is_receive:
-        return True, goal_state
+        return True, goal_state, [num_of_generate, num_of_expand]
     else:
-        return False, "can't pass the butter"
+        return False, "can't pass the butter", [num_of_generate, num_of_expand]
 
 
 def start_a_star_algorithm(test_case_file, max_depth):
@@ -159,10 +168,10 @@ def start_a_star_algorithm(test_case_file, max_depth):
     root_cost_f = heuristic[robot_coordinates['x']][robot_coordinates['y']]
     root_node = Node(environment_without_cost, robot_coordinates, 0, "", "", root_cost_g, root_cost_f)
 
-    result_of_a_star_algorithm, received_final_state = a_star_algorithm(root_node, max_depth, environment_cost,
+    result_of_a_star_algorithm, received_final_state, nodes_info = a_star_algorithm(root_node, max_depth, environment_cost,
                                                                         heuristic, all_goal_environment)
     if result_of_a_star_algorithm:
         path = find_path_with_final_node(received_final_state)
-        return result_of_a_star_algorithm, path, received_final_state.depth
+        return result_of_a_star_algorithm, path, received_final_state.depth, nodes_info
     else:
-        return result_of_a_star_algorithm, received_final_state, max_depth
+        return result_of_a_star_algorithm, received_final_state, max_depth, nodes_info
