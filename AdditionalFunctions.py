@@ -24,7 +24,7 @@ def read_file(file_name):
 
                 if row[j].isnumeric():
                     row_matrix_without_cost.append("")
-                    row_matrix_cost.append(row[j])
+                    row_matrix_cost.append(int(row[j]))
                 else:
                     if row[j] == "x":
                         row_matrix_without_cost.append(row[j])
@@ -33,7 +33,7 @@ def read_file(file_name):
                         char = row[j][-1]
                         number = row[j][0:-1]
                         row_matrix_without_cost.append(char)
-                        row_matrix_cost.append(number)
+                        row_matrix_cost.append(int(number))
                         if char == "r":
                             robot_coordinates = {"x": i, "y": j}
                         if char == "b":

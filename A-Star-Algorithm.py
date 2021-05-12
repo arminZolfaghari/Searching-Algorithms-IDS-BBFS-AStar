@@ -89,7 +89,7 @@ def calculate_cost_f_node(new_cost_g, new_robot_coordinates, huerisitic_arr):
 
 
 def calculate_cost_g_node(environment_cost, new_robot_coordinates, curr_cost_g):
-    return curr_cost_g + environment_cost[new_robot_coordinates['x']][new_robot_coordinates['y']]
+    return int(curr_cost_g) + int(environment_cost[new_robot_coordinates['x']][new_robot_coordinates['y']])
 
 
 def is_new_node_in_frontier(frontier, new_node):
@@ -157,6 +157,19 @@ def a_star_algorithm(start_node, max_depth, envrironment_cost, hueristic_arr, al
         return False, "can't pass the butter"
 
 
+# get final node(goal state) and return path from start node to goal node
+def find_path_with_final_node(node):
+    path_by_nodes = []
+    pre_node = node
+
+    while pre_node != "":
+        path_by_nodes.append(pre_node)
+        pre_node = pre_node.parent
+
+    path_by_nodes.reverse()
+    return path_by_nodes
+
+
 def start_a_star_algorithm(test_case_file, max_depth):
     environment_without_cost = read_file(test_case_file)[1]
     environment_cost = read_file(test_case_file)[2]
@@ -168,11 +181,24 @@ def start_a_star_algorithm(test_case_file, max_depth):
     root_cost_f = heuristic[robot_coordinates['x']][robot_coordinates['y']]
     root_node = Node(environment_without_cost, robot_coordinates, 0, "", "", root_cost_g, root_cost_f)
 
-    print(a_star_algorithm(root_node, max_depth, environment_cost, heuristic, all_goal_environment))
+    result_of_a_star_algorithm, received_final_state = a_star_algorithm(root_node, max_depth, environment_cost,
+                                                                        heuristic, all_goal_environment)
+    if result_of_a_star_algorithm:
+        path = find_path_with_final_node(received_final_state)
+        return result_of_a_star_algorithm, path, received_final_state.depth
+    else:
+        return result_of_a_star_algorithm, received_final_state, max_depth
 
 
 if __name__ == "__main__":
-    start_a_star_algorithm("test3.txt", 35)
+
+    result, path, goal_depth = start_a_star_algorithm("test5.txt", 35)
+
+    print("result : ", result)
+    print("path costs : ", path[-1].cost_g)
+    print(path)         # pass the gui
+    print("depth of goal : ", goal_depth)
+
     # environment_without_cost, environment_cost, robot_coordinates = read_file("test3.txt")[1], read_file("test3.txt")[
     #     2], read_file("test3.txt")[4]
     # print(environment_without_cost)
