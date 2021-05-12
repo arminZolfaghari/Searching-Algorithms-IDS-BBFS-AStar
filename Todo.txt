@@ -1,4 +1,0 @@
-TO DO and Bugs:
-
-1. find path in BBFS
-2. A*

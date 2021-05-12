@@ -62,7 +62,7 @@ class GraphicalInterface():
 import BBFS as b
 if __name__ == "__main__":
 
-    file_name = 'test1.txt'
+    file_name = 'test3.txt'
     path = b.BBFS(file_name)
     movement_list = []
     for p in path:

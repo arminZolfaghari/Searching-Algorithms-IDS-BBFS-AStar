@@ -191,13 +191,14 @@ def start_a_star_algorithm(test_case_file, max_depth):
 
 
 if __name__ == "__main__":
-
+    
     result, path, goal_depth = start_a_star_algorithm("test5.txt", 35)
 
     print("result : ", result)
     print("path costs : ", path[-1].cost_g)
     print(path)         # pass the gui
     print("depth of goal : ", goal_depth)
+
 
     # environment_without_cost, environment_cost, robot_coordinates = read_file("test3.txt")[1], read_file("test3.txt")[
     #     2], read_file("test3.txt")[4]

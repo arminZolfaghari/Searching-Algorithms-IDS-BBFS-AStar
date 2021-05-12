@@ -225,7 +225,7 @@ def write_to_file(test_case, movement_list, duration):
     f.write(str("{:.2f}".format(duration)))
     f.write("\n**************************\n")
 
-
+import GraphicalInterface as gui
 if __name__ == '__main__':
 
     file_name = 'test1.txt'
@@ -244,4 +244,6 @@ if __name__ == '__main__':
         print('path length is: ', len(path))
         print('path is: ', movement_list)
         print_path(path)
-        write_to_file(file_name, movement_list, duration)
+        g = gui.GraphicalInterface(path)
+        g.Visualize()
+        # write_to_file(file_name, movement_list, duration)
