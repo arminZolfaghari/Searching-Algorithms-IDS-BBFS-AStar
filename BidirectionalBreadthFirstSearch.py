@@ -4,19 +4,6 @@ import copy, time
 
 move_to_coordinate = {'u': {"x": -1},'r': {"y": +1}, 'd': {"x": +1}, 'l': {"y": -1}}
 
-def print_environment(environment):
-    for r in environment:
-        for c in r:
-            if c == "":
-                print("-",end = " ")
-            else:
-                print(c,end = " ")
-        print()
-
-
-def print_frontier(frontier):
-    for f in frontier:
-        print('r in frontier: ', f.robot_coordinates)
 
 # this function checks whether we reach the end of the BBFS Algorithm or not.
 # if two exact environments in forward frontier and backward frontier are found then it's finished.
@@ -124,8 +111,7 @@ def create_final_nodes(goal_environments, goal_robots_coordinates):
     backward_frontier = []
     initial_node = Initial_node([])
     for i in range(len(goal_environments)):    # or len(goal_robots_coordinates) it doesn't matter
-        backward_frontier.append(
-            Node(goal_environments[i], goal_robots_coordinates[i], 0, ' ', initial_node, "", ""))
+        backward_frontier.append(Node(goal_environments[i], goal_robots_coordinates[i], 0, ' ', initial_node, "", ""))
 
     return backward_frontier
 
@@ -164,7 +150,6 @@ def find_path(intersected_node, backward_node, goal_environments):
     for p in range(1, len(path2)):
         path2[p].movement = find_move(path2[p-1], path2[p])
     
-    print(len(path2))
     for p in path2:
         path.append(p)
 
@@ -209,23 +194,7 @@ def BBFS(file_name):
     return path
 
 
-def print_path(path):
-    for node in path:
-        print("*********************************************************")
-        print(node.movement)
-        print_environment(node.environment)
 
-
-def write_to_file(test_case, movement_list, duration):
-    f = open("result BBFS.txt", "a")
-    f.write(test_case)
-    f.write("\npath is: ")
-    f.write(' --> '.join(movement_list))
-    f.write('\nduration: ')
-    f.write(str("{:.2f}".format(duration)))
-    f.write("\n**************************\n")
-
-import GraphicalInterface as gui
 if __name__ == '__main__':
 
     file_name = 'test1.txt'
@@ -244,6 +213,4 @@ if __name__ == '__main__':
         print('path length is: ', len(path))
         print('path is: ', movement_list)
         print_path(path)
-        g = gui.GraphicalInterface(path)
-        g.Visualize()
         # write_to_file(file_name, movement_list, duration)

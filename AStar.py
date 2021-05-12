@@ -72,12 +72,6 @@ def get_heuristic_point(point):
     return
 
 
-# calculate_heuristic 2
-# def calculate_heuristic(point, butters_coordinates_arr, plates_coordinates_arr):
-#     butters_arr_sorted, plates_arr_sorted = find_butter_for_plate(butters_coordinates_arr, plates_coordinates_arr)
-#
-
-
 # sort frontier list by cost nodes
 def sort_frontier_by_cost(frontier):
     frontier.sort(key=lambda x: x.cost_f, reverse=False)
@@ -198,12 +192,3 @@ if __name__ == "__main__":
     print("path costs : ", path[-1].cost_g)
     print(path)         # pass the gui
     print("depth of goal : ", goal_depth)
-
-
-    # environment_without_cost, environment_cost, robot_coordinates = read_file("test3.txt")[1], read_file("test3.txt")[
-    #     2], read_file("test3.txt")[4]
-    # print(environment_without_cost)
-    # arr_plates = find_plates_coordinates("test3.txt")
-    # print(arr_plates)
-    #
-    # print(calculate_heuristic_environment(arr_plates, environment_without_cost))

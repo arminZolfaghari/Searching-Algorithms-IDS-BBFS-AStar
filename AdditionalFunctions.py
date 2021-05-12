@@ -1,7 +1,6 @@
 from collections import defaultdict
 import copy
 
-
 # read file and return information about environment
 def read_file(file_name):
     path = "./input/" + file_name
@@ -47,20 +46,8 @@ def read_file(file_name):
 
 
 def move_forward(environment, next_move, robot_coordinates):
+
     num_rows, num_cols = len(environment), len(environment[0])
-
-    # if next_move == 'u':
-    #     robot_coordinates['x'] -= 1
-    #
-    # elif next_move == 'd':
-    #     robot_coordinates['x'] += 1
-    #
-    # elif next_move == 'r':
-    #     robot_coordinates['y'] += 1
-    #
-    # elif next_move == 'l':
-    #     robot_coordinates['y'] -= 1
-
     new_robot_coordinates = dsum(robot_coordinates, movement_to_coordinate[next_move])
 
     # robot is not allowed to go outside the environment
@@ -68,22 +55,6 @@ def move_forward(environment, next_move, robot_coordinates):
         return True, new_robot_coordinates
     else:
         return False, new_robot_coordinates
-
-
-# def move_backward(next_move, robot_coordinates):
-#     if next_move == 'u':
-#         robot_coordinates['y'] += 1
-#
-#     elif next_move == 'd':
-#         robot_coordinates['y'] -= 1
-#
-#     elif next_move == 'r':
-#         robot_coordinates['x'] -= 1
-#
-#     elif next_move == 'l':
-#         robot_coordinates['x'] += 1
-#
-#     return robot_coordinates
 
 
 # it takes the enviroment, our next move and robot coordinates as input and checks whether the robot can make this
@@ -178,8 +149,7 @@ def update_environment(environment, current_robot_coordinates, movement):
 
 
 def find_plates_coordinates(file_name):
-    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
-        file_name)
+    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(file_name)
     num_rows, num_cols = len(environment_without_cost), len(environment_without_cost[0])
 
     plates_coordinates = []
@@ -192,8 +162,7 @@ def find_plates_coordinates(file_name):
 
 
 def find_butters_coordinates(file_name):
-    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
-        file_name)
+    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(file_name)
     num_rows, num_cols = len(environment_without_cost), len(environment_without_cost[0])
 
     butters_coordinates = []
@@ -206,8 +175,7 @@ def find_butters_coordinates(file_name):
 
 
 def generate_all_goal_environment(file_name):
-    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
-        file_name)
+    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(file_name)
 
     start_robot_x_coordinates, start_robot_y_coordinates = robot_coordinates['x'], robot_coordinates['y']
     all_plates_coordinates = find_plates_coordinates(file_name)
@@ -235,8 +203,7 @@ def generate_all_goal_environment(file_name):
     all_goal_robot_coordinates = []
     for final_robot_coordinates in all_final_robot_coordinates:
         goal_environment = copy.deepcopy(environment_without_cost)
-        final_robot_x_coordinates, final_robot_y_coordinates = final_robot_coordinates['x'], final_robot_coordinates[
-            'y']
+        final_robot_x_coordinates, final_robot_y_coordinates = final_robot_coordinates['x'], final_robot_coordinates['y']
         goal_environment[final_robot_x_coordinates][final_robot_y_coordinates] = 'r'
         all_goal_environment.append(goal_environment)
         all_goal_robot_coordinates.append(final_robot_coordinates)
@@ -244,7 +211,37 @@ def generate_all_goal_environment(file_name):
     return all_goal_environment, all_goal_robot_coordinates
 
 
-if __name__ == "__main__":
-    arr1, arr2 = generate_all_goal_environment("test6.txt")
-    for i in arr1:
-        print(i)
+def print_environment(environment):
+    for r in environment:
+        for c in r:
+            if c == "":
+                print("-",end = " ")
+            else:
+                print(c,end = " ")
+        print()
+
+
+def print_path(path):
+    for node in path:
+        print("*********************************************************")
+        print(node.movement)
+        print_environment(node.environment)
+
+
+def write_to_file(algorithm, test_case, movement_list, duration):
+
+    if algorithm == "IDS":
+        f = open("result IDS.txt", "a")
+
+    elif algorithm == "BBFS":
+        f = open("result BBFS.txt", "a")
+
+    elif algorithm == "ASTAR":
+        f = open("result ASTAR.txt", "a")
+
+    f.write(test_case)
+    f.write("\npath is: ")
+    f.write(' --> '.join(movement_list))
+    f.write('\nduration: ')
+    f.write(str("{:.2f}".format(duration)))
+    f.write("\n**************************\n")

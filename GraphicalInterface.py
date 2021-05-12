@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-import time
 from PIL import ImageTk, Image
 
 root = tk.Tk()
@@ -57,19 +56,3 @@ class GraphicalInterface():
             self.step += 1
             root.after(1000, self.Visualize)
         root.mainloop()
-
-
-import BBFS as b
-if __name__ == "__main__":
-
-    file_name = 'test3.txt'
-    path = b.BBFS(file_name)
-    movement_list = []
-    for p in path:
-        movement_list.append(p.movement)
-    movement_list.pop(0)
-    print('path length is: ', len(path))
-    print('path is: ', movement_list)
-    b.print_path(path)
-    g = GraphicalInterface(path)
-    g.Visualize()
