@@ -19,9 +19,12 @@ if __name__ == "__main__":
 
     elif algorithm == "2" or algorithm == "BBFS":
         start_time = time.time()
-        has_result, path = bbfs.BBFS(file_name)
+        has_result, path, nodes_info = bbfs.BBFS(file_name)
         finish_time = time.time()
         duration = (finish_time - start_time)
+        print("number of created nodes are:", nodes_info[0])
+        print("number of expanded nodes are:", nodes_info[1])
+
         if not has_result:
             print('there is no answer in this environment!')
         else:
