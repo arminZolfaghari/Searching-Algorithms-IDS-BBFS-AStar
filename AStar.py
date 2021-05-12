@@ -11,6 +11,7 @@ def calculate_manhattan_distance(point1, point2):
     return abs(x_point1 - x_point2) + abs(y_point1 - y_point2)
 
 
+# heuristic2
 def find_butter_for_plate(butters_coordinates_arr, plates_coordinates_arr):
     butters_arr_sorted = []
     plates_arr_sorted = []
@@ -68,16 +69,12 @@ def calculate_heuristic_environment(plates_coordinates_arr, environment_without_
     return heuristic_environment
 
 
-def get_heuristic_point(point):
-    return
-
-
 # sort frontier list by cost nodes
 def sort_frontier_by_cost(frontier):
     frontier.sort(key=lambda x: x.cost_f, reverse=False)
 
 
-# return cost of point
+# return cost f of point
 def calculate_cost_f_node(new_cost_g, new_robot_coordinates, huerisitic_arr):
     return int(new_cost_g) + huerisitic_arr[new_robot_coordinates['x']][new_robot_coordinates['y']]
 
@@ -149,19 +146,6 @@ def a_star_algorithm(start_node, max_depth, envrironment_cost, hueristic_arr, al
         return True, goal_state
     else:
         return False, "can't pass the butter"
-
-
-# get final node(goal state) and return path from start node to goal node
-def find_path_with_final_node(node):
-    path_by_nodes = []
-    pre_node = node
-
-    while pre_node != "":
-        path_by_nodes.append(pre_node)
-        pre_node = pre_node.parent
-
-    path_by_nodes.reverse()
-    return path_by_nodes
 
 
 def start_a_star_algorithm(test_case_file, max_depth):

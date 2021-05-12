@@ -20,7 +20,7 @@ def create_child(node):
     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
     for movement in all_permitted_movements:
         new_environment, new_robot_coordinates = update_environment(curr_environment, curr_robot_coordinates, movement)
-        child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node, 0, 0)
+        child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node, node.cost_g + 1, 0)
         children_arr.insert(0, child_node)
 
     return children_arr
@@ -64,36 +64,30 @@ def ids(first_node, all_goal_environment, max_depth):
     for depth in range(max_depth):
         goal_node = dls(first_node, all_goal_environment, depth)
         if goal_node:
-            return goal_node
-    return False
+            return True, goal_node
+    return False, ""
 
 
 def start_ids_algorithm(test_case_file, max_depth):
     environment = read_file(test_case_file)[1]
     robot_coordinates = read_file(test_case_file)[4]
     all_goal_environment = generate_all_goal_environment(test_case_file)[0]
-    root_node = Node(environment, robot_coordinates, 0, "", "", 0, 0)
+    root_node = Node(environment, robot_coordinates, 0, "", "", 1, 0)
     start_time = time.time()
-    path_to_goal_nodes = ids(root_node, all_goal_environment, max_depth)
-    finish_time = time.time()
-    duration = (finish_time - start_time)
 
-    print(environment)
-    if len(path_to_goal_nodes) > 0:
-        print_path_with_nodes(path_to_goal_nodes[1:])
+    result_of_IDS, received_final_state = ids(root_node, all_goal_environment, max_depth)
+    # finish_time = time.time()
+    # duration = (finish_time - start_time)
+
+    if result_of_IDS:
+        path = find_path_with_final_node(received_final_state)
+        return result_of_IDS, path, received_final_state.depth
     else:
-        print("can't pass the butter")
-
-    print("depth : ", len(path_to_goal_nodes[1:]))
-    print("duration(s) : ", duration)
+        return result_of_IDS, received_final_state, max_depth
 
 
-def print_path_with_nodes(arr):
-    for node in reversed(arr):
-        print("*********************************************************")
-        print(node.movement)
-        print(node.environment)
+# if __name__ == "__main__":
+#     print(start_ids_algorithm("test1.txt", 35))
 
 
-if __name__ == "__main__":
-    start_ids_algorithm("test1.txt", 15)
+
