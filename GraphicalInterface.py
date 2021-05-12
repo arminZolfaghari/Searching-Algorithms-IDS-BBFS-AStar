@@ -59,7 +59,7 @@ class GraphicalInterface():
         root.mainloop()
 
 
-import BBFS as b
+import BidirectionalBreadthFirstSearch as b
 if __name__ == "__main__":
 
     file_name = 'test1.txt'

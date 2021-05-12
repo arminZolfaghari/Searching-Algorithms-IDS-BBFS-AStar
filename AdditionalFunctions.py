@@ -95,7 +95,8 @@ def check_next_move(environment, next_move, robot_coordinates):
 
     else:
         # robot is not allowed to go to the cells with x or bp in it
-        if 'bp' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']] or 'x' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']]:
+        if 'bp' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']] or 'x' in \
+                environment[robot_next_coordinates['x']][robot_next_coordinates['y']]:
             return False
 
         if 'b' in environment[robot_next_coordinates['x']][robot_next_coordinates['y']]:
@@ -166,7 +167,8 @@ def update_environment(environment, current_robot_coordinates, movement):
         new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'rp'
 
-    elif new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == '' and new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] == 'rp':
+    elif new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == '' and \
+            new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] == 'rp':
         new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'p'
         new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
@@ -242,6 +244,19 @@ def generate_all_goal_environment(file_name):
         all_goal_robot_coordinates.append(final_robot_coordinates)
 
     return all_goal_environment, all_goal_robot_coordinates
+
+
+# get final node(goal state) and return path from start node to goal node
+def find_path_with_final_node(node):
+    path_by_nodes = []
+    pre_node = node
+
+    while pre_node != "":
+        path_by_nodes.append(pre_node)
+        pre_node = pre_node.parent
+
+    path_by_nodes.reverse()
+    return path_by_nodes
 
 
 if __name__ == "__main__":

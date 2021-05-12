@@ -1,4 +1,4 @@
-import IDS, BBFS, A-Star-Algorithm
+import IterativeDeepeningSearch, BidirectionalBreadthFirstSearch, A-Star - Algorithm
 
 
 

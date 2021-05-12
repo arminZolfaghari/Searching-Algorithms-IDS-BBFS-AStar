@@ -20,7 +20,7 @@ def create_child(node):
     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
     for movement in all_permitted_movements:
         new_environment, new_robot_coordinates = update_environment(curr_environment, curr_robot_coordinates, movement)
-        child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node)
+        child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node, 0, 0)
         children_arr.insert(0, child_node)
 
     return children_arr
@@ -32,16 +32,16 @@ nodes = []
 
 def dls(start_node, all_goal_environment, max_depth):
     if start_node.environment in all_goal_environment:
-        return [start_node]
+        return start_node
     if max_depth <= 0:
-        return []
+        return False
 
     children = create_child(start_node)
     for child in children:
-        nodes = dls(child, all_goal_environment, max_depth - 1)
-        if len(nodes) > 0:
-            return nodes + [child]
-    return []
+        goal_node = dls(child, all_goal_environment, max_depth - 1)
+        if goal_node:
+            return goal_node
+    return False
 
     # def create_child(self, frontier):
     #     curr_environment, curr_robot_coordinates, curr_depth = self.environment, self.robot_coordinates, self.depth
@@ -62,17 +62,17 @@ def dls(start_node, all_goal_environment, max_depth):
 # It uses recursive dls()
 def ids(first_node, all_goal_environment, max_depth):
     for depth in range(max_depth):
-        nodes = dls(first_node, all_goal_environment, depth)
-        if len(nodes):
-            return nodes
-    return []
+        goal_node = dls(first_node, all_goal_environment, depth)
+        if goal_node:
+            return goal_node
+    return False
 
 
 def start_ids_algorithm(test_case_file, max_depth):
     environment = read_file(test_case_file)[1]
     robot_coordinates = read_file(test_case_file)[4]
     all_goal_environment = generate_all_goal_environment(test_case_file)[0]
-    root_node = Node(environment, robot_coordinates, 0, "", "")
+    root_node = Node(environment, robot_coordinates, 0, "", "", 0, 0)
     start_time = time.time()
     path_to_goal_nodes = ids(root_node, all_goal_environment, max_depth)
     finish_time = time.time()
