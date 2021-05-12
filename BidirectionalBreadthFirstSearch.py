@@ -18,6 +18,7 @@ def end_checker(forward_frontier, backward_frontier):
 def bfs(node, frontier, direction, nodes_info):
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
+    nodes_info[0] += len(all_permitted_movements)
 
     all_children = []
     for movement in all_permitted_movements:
@@ -38,7 +39,6 @@ def bfs(node, frontier, direction, nodes_info):
                 is_unique = False
                 break
         if is_unique:
-            nodes_info[0] += 1
             frontier.append(child)
 
     return frontier, nodes_info
