@@ -5,9 +5,8 @@ import GraphicalInterface as gui
 import AdditionalFunctions as funcs
 import time
 
-
 if __name__ == "__main__":
-    file_name = 'test3.txt'
+    file_name = 'test1.txt'
     algorithm = input("Which Algorithm do you want to use?\n1) IDS\n2) BBFS\n3) A*\n")
 
     if algorithm == "1" or algorithm == "IDS":
@@ -24,6 +23,7 @@ if __name__ == "__main__":
             movement_list = funcs.find_movement_list(path)
             print("path costs : ", path[-1].cost_g)
             print("depth of goal : ", goal_depth)
+            print('path is: ', movement_list)
             funcs.print_path(path)
             g = gui.GraphicalInterface(path)
             g.Visualize()
@@ -63,6 +63,7 @@ if __name__ == "__main__":
             movement_list = funcs.find_movement_list(path)
             print("path costs : ", path[-1].cost_g)
             print("depth of goal : ", goal_depth)
+            print('path is: ', movement_list)
             funcs.print_path(path)
             g = gui.GraphicalInterface(path)
             g.Visualize()

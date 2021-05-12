@@ -4,7 +4,7 @@ from Node import *
 import time
 
 
-def create_child(node, num_generate_node, num_expand_node):
+def create_child(node):
     children_arr = []
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
@@ -13,37 +13,33 @@ def create_child(node, num_generate_node, num_expand_node):
         child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node, node.cost_g + 1, 0)
         children_arr.insert(0, child_node)
 
-    num_generate_node += len(children_arr)
-    num_expand_node += 1
-    return children_arr, num_generate_node, num_expand_node
+    return children_arr
 
 
 # depth limited search
-def dls(start_node, all_goal_environment, max_depth, num_generate, num_expand):
+def dls(start_node, all_goal_environment, max_depth, nodes_info):
+    nodes_info[1] += 1  # num_of_expand
     if start_node.environment in all_goal_environment:
         return start_node
     if max_depth <= 0:
         return False
 
-    children, generate, expand = create_child(start_node, num_generate, num_expand)
+    children = create_child(start_node)
+    nodes_info[0] += len(children)  # num_of_generate
 
     for child in children:
-        goal_node = dls(child, all_goal_environment, max_depth - 1, generate, expand)
+        goal_node = dls(child, all_goal_environment, max_depth - 1, nodes_info)
         if goal_node:
-            return goal_node, generate, expand
-    return False, generate, expand
+            return goal_node
+    return False
 
 
 # It uses recursive dls()
 def ids(first_node, all_goal_environment, max_depth):
-    num_generate_node, num_expand_node = 0, 0
-    nodes_info = []
+    nodes_info = [0, 0]  # nodes_info[0] is num_of_generates , nodes_info[1] is num_of_expanded
     for depth in range(max_depth):
-        goal_node, generate, expand = dls(first_node, all_goal_environment, depth, num_generate_node, num_expand_node)
-        num_generate_node += generate
-        num_expand_node += expand
+        goal_node = dls(first_node, all_goal_environment, depth, nodes_info)
 
-        nodes_info = [num_generate_node, num_expand_node]
         if goal_node:
             return True, goal_node, nodes_info
     return False, "", nodes_info
