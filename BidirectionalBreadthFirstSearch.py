@@ -1,6 +1,7 @@
 from AdditionalFunctions import *
 from Node import Node, Initial_node
-import copy, time
+import copy
+from AStar import is_new_node_in_explored, is_new_node_in_frontier
 
 move_to_coordinate = {'u': {"x": -1}, 'r': {"y": +1}, 'd': {"x": +1}, 'l': {"y": -1}}
 
@@ -16,7 +17,7 @@ def end_checker(forward_frontier, backward_frontier):
 
 
 # creating children in BFS is not the same with IDS. in BFS children are added at the end of the frontier queue
-def bfs(node, frontier, direction, nodes_info):
+def bfs(node, frontier, direction, nodes_info, explored):
     curr_environment, curr_robot_coordinates, curr_depth = node.environment, node.robot_coordinates, node.depth
     all_permitted_movements = get_all_permitted_movements(curr_environment, curr_robot_coordinates)
     nodes_info[0] += len(all_permitted_movements)
@@ -36,13 +37,17 @@ def bfs(node, frontier, direction, nodes_info):
             all_children.append(child_node)
 
     for child in all_children:
-        is_unique = True
-        for node in frontier:
-            if child.environment == node.environment:
-                is_unique = False
-                break
-        if is_unique:
+        is_in_explored = is_new_node_in_explored(explored, child)
+        is_in_frontier, _ = is_new_node_in_frontier(frontier, child)
+        if not is_in_explored and not is_in_frontier:
             frontier.append(child)
+        # is_unique = True
+        # for node in frontier:
+        #     if child.environment == node.environment:
+        #         is_unique = False
+        #         break
+        # if is_unique:
+        #     frontier.append(child)
 
     return frontier, nodes_info
 
@@ -162,6 +167,7 @@ def find_path(intersected_node, backward_node, goal_environments):
 def BBFS(file_name):
     # nodes_info = [num_created_nodes, num_expanded_nodes]
     nodes_info = [0, 0]
+    explored = []   # explored list
 
     has_result = True
     environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
@@ -183,12 +189,14 @@ def BBFS(file_name):
     while True:
         if len(forward_frontier) > 0:
             nodes_info[1] += 1
-            forward_frontier, nodes_info = bfs(forward_frontier.pop(0), forward_frontier, 'forward', nodes_info)
+            explored.append(forward_frontier.pop(0))
+            forward_frontier, nodes_info = bfs(explored[-1], forward_frontier, 'forward', nodes_info, explored)
 
         # backward dfs should be called here
         if len(backward_frontier) > 0:
             nodes_info[1] += 1
-            backward_frontier, nodes_info = bfs(backward_frontier.pop(0), backward_frontier, 'backward', nodes_info)
+            explored.append(backward_frontier.pop(0))
+            backward_frontier, nodes_info = bfs(explored[-1], backward_frontier, 'backward', nodes_info, explored)
 
         # environment with no solution should be handled
         is_end, intersected_node, backward_node = end_checker(forward_frontier, backward_frontier)
