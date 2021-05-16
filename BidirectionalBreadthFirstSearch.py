@@ -13,7 +13,7 @@ def end_checker(forward_frontier, backward_frontier):
         for backward_node in backward_frontier:
             if forward_node.environment == backward_node.environment:
                 return True, forward_node, backward_node.parent
-    return False, forward_node, backward_node  # these nodes are not important.
+    return False, forward_frontier[0], forward_frontier[0]  # these nodes are not important.
 
 
 # creating children in BFS is not the same with IDS. in BFS children are added at the end of the frontier queue
@@ -25,17 +25,23 @@ def bfs(node, frontier, direction, nodes_info, explored):
     all_children = []
     for movement in all_permitted_movements:
         if direction == 'forward':
-            new_environment, new_robot_coordinates = update_environment(node.environment, node.robot_coordinates,
-                                                                        movement)
-        elif direction == 'backward':
-            new_environment, new_robot_coordinates = update_environment_backward(node.environment,
-                                                                                 node.robot_coordinates, movement)
-
-        # new states should be checked. they should not be repetetive states.
-        if new_environment != node.parent.environment:
+            new_environment, new_robot_coordinates = update_environment(node.environment, node.robot_coordinates, movement)
+            # if new_environment != node.parent.environment:
             child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node, "", "")
             all_children.append(child_node)
 
+        elif direction == 'backward':   # we may have more than one environment
+            new_environments, new_robot_coordinates, only_one_child = update_environment_backward(node.environment, node.robot_coordinates, movement)
+
+            # if new_environment != node.parent.environment:
+            first_child_node = Node(new_environments[0], new_robot_coordinates, curr_depth + 1, movement, node, "", "")
+            all_children.append(first_child_node)
+            if not only_one_child:
+                second_child_node = Node(new_environments[1], new_robot_coordinates, curr_depth + 1, movement, node, "", "")
+                all_children.append(second_child_node)
+
+
+    # new states should be checked. they should not be repetetive states.
     for child in all_children:
         is_in_explored = is_new_node_in_explored(explored, child)
         is_in_frontier, _ = is_new_node_in_frontier(frontier, child)
@@ -49,7 +55,7 @@ def bfs(node, frontier, direction, nodes_info, explored):
         # if is_unique:
         #     frontier.append(child)
 
-    return frontier, nodes_info
+    return frontier, nodes_info, explored
 
 
 # this function return the cell in  environment if we move in the oposite direction of movement.
@@ -79,38 +85,48 @@ def reverse_movement(environment, robot_coordinates, movement, is_goal):
 
 # this function updates environment backward (from goal state to initial state).
 def update_environment_backward(environment, current_robot_coordinates, movement):
+    is_there_only_one_child = True
     new_robot_coordinates = dsum(current_robot_coordinates, move_to_coordinate[movement])
     curr_robot_x_coordinate, curr_robot_y_coordinate = current_robot_coordinates['x'], current_robot_coordinates['y']
     new_robot_x_coordinate, new_robot_y_coordinate = new_robot_coordinates['x'], new_robot_coordinates['y']
 
     new_environment = copy.deepcopy(environment)
+    returned_environments = [new_environment, new_environment]
 
     # next robot coordinates have plate
-    if new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == 'p':
-        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
-        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'rp'
+    if returned_environments[0][new_robot_x_coordinate][new_robot_y_coordinate] == 'p':
+        returned_environments[0][curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+        returned_environments[0][new_robot_x_coordinate][new_robot_y_coordinate] = 'rp'
 
-    elif new_environment[new_robot_x_coordinate][new_robot_y_coordinate] == '' and \
-            new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] == 'rp':
-        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'p'
-        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+    elif returned_environments[0][new_robot_x_coordinate][new_robot_y_coordinate] == '' and \
+            returned_environments[0][curr_robot_x_coordinate][curr_robot_y_coordinate] == 'rp':
+        returned_environments[0][curr_robot_x_coordinate][curr_robot_y_coordinate] = 'p'
+        returned_environments[0][new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
     # set new coordinates for butter
-    elif reverse_movement(new_environment, current_robot_coordinates, movement, False) == 'b':
-        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'b'
-        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+    elif reverse_movement(returned_environments[0], current_robot_coordinates, movement, False) == 'b':
+        is_there_only_one_child = False
+        returned_environments[0][curr_robot_x_coordinate][curr_robot_y_coordinate] = 'b'
+        returned_environments[0][new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+
+        returned_environments[1][curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+        returned_environments[1][new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
     # if butter is on goal state
-    elif reverse_movement(new_environment, current_robot_coordinates, movement, False) == 'bp':
-        reverse_movement(new_environment, current_robot_coordinates, movement, True)
-        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = 'b'
-        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+    elif reverse_movement(returned_environments[0], current_robot_coordinates, movement, False) == 'bp':
+        reverse_movement(returned_environments[0], current_robot_coordinates, movement, True)
+        is_there_only_one_child = False
+        returned_environments[0][curr_robot_x_coordinate][curr_robot_y_coordinate] = 'b'
+        returned_environments[0][new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+
+        returned_environments[1][curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+        returned_environments[1][new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
     else:
-        new_environment[curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
-        new_environment[new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
+        returned_environments[0][curr_robot_x_coordinate][curr_robot_y_coordinate] = ''
+        returned_environments[0][new_robot_x_coordinate][new_robot_y_coordinate] = 'r'
 
-    return new_environment, new_robot_coordinates
+    return returned_environments, new_robot_coordinates, is_there_only_one_child
 
 
 def create_final_nodes(goal_environments, goal_robots_coordinates):
@@ -170,8 +186,7 @@ def BBFS(file_name):
     explored = []   # explored list
 
     has_result = True
-    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(
-        file_name)
+    environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(file_name)
 
     forward_frontier, backward_frontier = [], []
     # initialize robot coordinates to initial node
@@ -190,25 +205,27 @@ def BBFS(file_name):
         if len(forward_frontier) > 0:
             nodes_info[1] += 1
             explored.append(forward_frontier.pop(0))
-            forward_frontier, nodes_info = bfs(explored[-1], forward_frontier, 'forward', nodes_info, explored)
+            forward_frontier, nodes_info, explored = bfs(explored[-1], forward_frontier, 'forward', nodes_info, explored)
 
         # backward dfs should be called here
         if len(backward_frontier) > 0:
             nodes_info[1] += 1
             explored.append(backward_frontier.pop(0))
-            backward_frontier, nodes_info = bfs(explored[-1], backward_frontier, 'backward', nodes_info, explored)
+            backward_frontier, nodes_info, explored = bfs(explored[-1], backward_frontier, 'backward', nodes_info, explored)
 
         # environment with no solution should be handled
-        is_end, intersected_node, backward_node = end_checker(forward_frontier, backward_frontier)
+        if len(forward_frontier) != 0:
+            is_end, intersected_node, backward_node = end_checker(forward_frontier, backward_frontier)
+        else:
+            print("wtf??")
         if is_end:
             break
 
         # check if we have answer at all!
-        if (forward_frontier[-1].depth + backward_frontier[-1].depth) > (
-                len(environment_without_cost) * len(environment_without_cost[0])):
-            path = ['no answer']
-            has_result = False
-            return has_result, path, nodes_info
+        # if (forward_frontier[-1].depth + backward_frontier[-1].depth) > (len(environment_without_cost) * len(environment_without_cost[0])):
+        #     path = ['no answer']
+        #     has_result = False
+        #     return has_result, path, nodes_info
 
     # find and print final path
     path = find_path(intersected_node, backward_node, goal_environments)
