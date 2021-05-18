@@ -8,12 +8,12 @@ move_to_coordinate = {'u': {"x": -1}, 'r': {"y": +1}, 'd': {"x": +1}, 'l': {"y":
 
 # this function checks whether we reach the end of the BBFS Algorithm or not.
 # if two exact environments in forward frontier and backward frontier are found then it's finished.
-def end_checker(forward_frontier, backward_frontier):
-    for forward_node in forward_frontier:
-        for backward_node in backward_frontier:
+def end_checker(forward_explored, backward_explored):
+    for forward_node in forward_explored:
+        for backward_node in backward_explored:
             if forward_node.environment == backward_node.environment:
-                return True, forward_node, backward_node.parent
-    return False, forward_frontier[0], forward_frontier[0]  # these nodes are not important.
+                return forward_node, backward_node.parent
+    return None
 
 
 # creating children in BFS is not the same with IDS. in BFS children are added at the end of the frontier queue
@@ -26,14 +26,12 @@ def bfs(node, frontier, direction, nodes_info, explored):
     for movement in all_permitted_movements:
         if direction == 'forward':
             new_environment, new_robot_coordinates = update_environment(node.environment, node.robot_coordinates, movement)
-            # if new_environment != node.parent.environment:
             child_node = Node(new_environment, new_robot_coordinates, curr_depth + 1, movement, node, "", "")
             all_children.append(child_node)
 
         elif direction == 'backward':   # we may have more than one environment
             new_environments, new_robot_coordinates, only_one_child = update_environment_backward(node.environment, node.robot_coordinates, movement)
 
-            # if new_environment != node.parent.environment:
             first_child_node = Node(new_environments[0], new_robot_coordinates, curr_depth + 1, movement, node, "", "")
             all_children.append(first_child_node)
             if not only_one_child:
@@ -47,13 +45,6 @@ def bfs(node, frontier, direction, nodes_info, explored):
         is_in_frontier, _ = is_new_node_in_frontier(frontier, child)
         if not is_in_explored and not is_in_frontier:
             frontier.append(child)
-        # is_unique = True
-        # for node in frontier:
-        #     if child.environment == node.environment:
-        #         is_unique = False
-        #         break
-        # if is_unique:
-        #     frontier.append(child)
 
     return frontier, nodes_info, explored
 
@@ -91,7 +82,9 @@ def update_environment_backward(environment, current_robot_coordinates, movement
     new_robot_x_coordinate, new_robot_y_coordinate = new_robot_coordinates['x'], new_robot_coordinates['y']
 
     new_environment = copy.deepcopy(environment)
-    returned_environments = [new_environment, new_environment]
+    new_environment2 = copy.deepcopy(environment)
+
+    returned_environments = [new_environment, new_environment2]
 
     # next robot coordinates have plate
     if returned_environments[0][new_robot_x_coordinate][new_robot_y_coordinate] == 'p':
@@ -170,6 +163,7 @@ def find_path(intersected_node, backward_node, goal_environments):
         else:
             tmp_node_back = copy.deepcopy(tmp_node_back.parent)
 
+    print_path(path)
     path2[0].movement = find_move(path[-1], path2[0])
     for p in range(1, len(path2)):
         path2[p].movement = find_move(path2[p - 1], path2[p])
@@ -183,12 +177,12 @@ def find_path(intersected_node, backward_node, goal_environments):
 def BBFS(file_name):
     # nodes_info = [num_created_nodes, num_expanded_nodes]
     nodes_info = [0, 0]
-    explored = []   # explored list
+    forward_explored, backward_explored = [], []   # explored lists
+    forward_frontier, backward_frontier = [], []   # frontier lists
 
     has_result = True
     environment_with_cost, environment_without_cost, environment_cost, number_of_butters, robot_coordinates = read_file(file_name)
 
-    forward_frontier, backward_frontier = [], []
     # initialize robot coordinates to initial node
     initial_node = Initial_node([])
     starting_node = Node(environment_without_cost, robot_coordinates, 0, ' ', initial_node, "", "")
@@ -204,23 +198,25 @@ def BBFS(file_name):
     while True:
         if len(forward_frontier) > 0:
             nodes_info[1] += 1
-            explored.append(forward_frontier.pop(0))
-            forward_frontier, nodes_info, explored = bfs(explored[-1], forward_frontier, 'forward', nodes_info, explored)
+            forward_explored.append(forward_frontier.pop(0))
+            forward_frontier, nodes_info, forward_explored = bfs(forward_explored[-1], forward_frontier, 'forward', nodes_info, forward_explored)
 
         # backward dfs should be called here
         if len(backward_frontier) > 0:
             nodes_info[1] += 1
-            explored.append(backward_frontier.pop(0))
-            backward_frontier, nodes_info, explored = bfs(explored[-1], backward_frontier, 'backward', nodes_info, explored)
+            backward_explored.append(backward_frontier.pop(0))
+            backward_frontier, nodes_info, backward_explored = bfs(backward_explored[-1], backward_frontier, 'backward', nodes_info, backward_explored)
 
         # environment with no solution should be handled
-        if len(forward_frontier) != 0:
-            is_end, intersected_node, backward_node = end_checker(forward_frontier, backward_frontier)
-        else:
-            print("wtf??")
-        if is_end:
+        result = end_checker(forward_explored, backward_explored)
+        if result is not None:
+            intersected_node, backward_node = result
             break
 
+        if len(forward_frontier) == 0:
+            path = ['no answer']
+            has_result = False
+            return has_result, path, nodes_info
         # check if we have answer at all!
         # if (forward_frontier[-1].depth + backward_frontier[-1].depth) > (len(environment_without_cost) * len(environment_without_cost[0])):
         #     path = ['no answer']
