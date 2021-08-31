@@ -1,4 +1,4 @@
-# Searching Algorithms:-IDS, BBFS and A*
+# Searching Algorithms: IDS, BBFS and A*
 Artificial Intelligence Course 1st Project: Implementing searching algorithms like IDS, BBFS and A* from scratch in order to find optimal path.
 <br>
 In this group project we ([arminZolfaghari](https://github.com/arminZolfaghari) and [Amirhossein-Rajabpour](https://github.com/Amirhossein-Rajabpour)) implemented `IDS`, `BBFS` 
