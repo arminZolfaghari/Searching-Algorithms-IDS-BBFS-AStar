@@ -21,6 +21,6 @@ Check full description (in persian): [here](https://github.com/arminZolfaghari/S
 Project report (in persian): [here](https://github.com/arminZolfaghari/Searching-Algorithms-IDS-BBFS-AStar/blob/main/AI_P1_Report.pdf)
 <br>
 Check our other AI Course projects:
-* [Project 2: Genetic Algorithm (IDS, BBFS, A*)](https://github.com/Amirhossein-Rajabpour/Genetic-Algorithm)
+* [Project 2: Genetic Algorithm](https://github.com/Amirhossein-Rajabpour/Genetic-Algorithm)
 * [Project 3: Constraint-Satisfaction-Problems](https://github.com/Amirhossein-Rajabpour/Constraint-Satisfaction-Problems)
 * [Project 4: NLP Comment Filtering](https://github.com/arminZolfaghari/NLP)
